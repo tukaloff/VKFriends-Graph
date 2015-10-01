@@ -26,7 +26,8 @@ public class Processor {
         
     public void start(int userId) {
         User rootUser = new User(userId);
-        
+        if (!(rootUser.getDeactivated()=="" && !(rootUser.getDeactivated()=="deleted")))
+            return;
         Friends friends = new Friends(userId);
         ArrayList<User> aFriends = friends.getArrayOfUsers();
         for (int i = 0; i < aFriends.size(); i++) {
@@ -37,7 +38,7 @@ public class Processor {
         if (counter != iterations) {
             counter++;
             for (int i = 0; i < aFriends.size(); i++) {
-                if (aFriends.get(i).getDeactivated()=="" || !(aFriends.get(i).getDeactivated()=="deleted"))
+                if (aFriends.get(i).getDeactivated()=="" && !(aFriends.get(i).getDeactivated()=="deleted"))
                     if (aFriends.get(i).getUserId() != 0)
                         start(aFriends.get(i).getUserId());
             }
