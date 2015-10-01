@@ -29,6 +29,7 @@ public class VKFriendsGraph {
         System.out.println(new GregorianCalendar().toInstant());
         
         int USER_ID = Integer.valueOf(args[0]);
+        //int USER_ID = Integer.valueOf(8308498);
         System.out.println(USER_ID);
         String[] path = new String[] {"response", "uid"};
         int tryConnect = 10;

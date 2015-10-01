@@ -85,6 +85,7 @@ class User implements VKObject{
             deactivated = xmlParser.getValue(0);
         else
             deactivated = "";
+        System.out.println(deactivated);
     }
     
     public void prepairParams() {
