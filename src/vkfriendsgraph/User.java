@@ -6,12 +6,8 @@
 package vkfriendsgraph;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -25,7 +21,7 @@ import org.w3c.dom.Node;
  *
  * @author user
  */
-class User implements VKObject{
+class User implements VKObject, Serializable {
     
     private int userId;
     private ArrayList<ArrayList<String>> params;
@@ -40,7 +36,7 @@ class User implements VKObject{
         Connection connection = new Connection(METHOD_USER_GET, userId, FORMAT_XML, 10, params);
         xml = connection.getXML().getFirstChild().getLastChild();
         parse(xml, XML_PARENT_MAIN_USER);
-        saveXml();
+        //saveXml();
     }
     
     public String getName() {
@@ -56,7 +52,7 @@ class User implements VKObject{
             System.out.println(xml);
             System.out.println(ex.getMessage());
         }
-        saveXml();
+        //saveXml();
     }
     
     @Override
@@ -85,7 +81,7 @@ class User implements VKObject{
             deactivated = xmlParser.getValue(0);
         else
             deactivated = "";
-        System.out.println(deactivated);
+        //System.out.println(deactivated);
     }
     
     public void prepairParams() {
@@ -166,7 +162,7 @@ class User implements VKObject{
             DOMSource source = new DOMSource(xml);
             StreamResult result = new StreamResult(new File("users/user_" + userId + "(" + getName() + ").xml"));
             transformer.transform(source, result);
-            System.out.println("Saved: user_" + userId + "(" + getName() + ").xml");
+            //System.out.println("Saved: user_" + userId + "(" + getName() + ").xml");
         } catch (TransformerConfigurationException ex) {
             System.out.println(ex.getMessage());
         } catch (TransformerException ex) {

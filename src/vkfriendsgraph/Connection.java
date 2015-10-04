@@ -5,21 +5,16 @@
  */
 package vkfriendsgraph;
 
-import com.sun.net.ssl.internal.www.protocol.https.HttpsURLConnectionOldImpl;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,7 +22,6 @@ import jdk.nashorn.internal.parser.JSONParser;
 import jdk.nashorn.internal.runtime.Source;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import sun.net.www.protocol.https.HttpsURLConnectionImpl;
 
 /**
  *
@@ -46,9 +40,9 @@ public class Connection {
         this.params = params;
         paramsToString();
         for (int i = 0; i < tryOut; i++) {
-            System.out.println(new GregorianCalendar().toInstant() + " Try: " + i);
+            //System.out.println(new GregorianCalendar().toInstant() + " Try: " + i);
             if (tryHTTPS_GET(methosName, respType, UserID)) {
-                System.out.println(UserID);
+                //System.out.println(UserID);
                 return;
             }
         }        
@@ -74,7 +68,7 @@ public class Connection {
         }
     }
 
-    public boolean tryHTTPS_GET (String methodName, String answerType, long USER_ID) {
+    private boolean tryHTTPS_GET (String methodName, String answerType, long USER_ID) {
         try {
             //Генерируем строку запроса
             sQuery = "https://api.vk.com/method/" + methodName + answerType + "?" + sParams;

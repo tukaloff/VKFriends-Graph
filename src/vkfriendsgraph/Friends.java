@@ -27,9 +27,12 @@ public class Friends implements VKObject{
     private ArrayList<ArrayList<String>> params;
     private Node xml;
     private ArrayList<User> friends;
+    private final String ORDER_HINTS = "hints";
+    private int count;
     
-    public Friends(int userId) {
+    public Friends(int userId, int count) {
         this.userId = userId;
+        this.count = count;
         prepairParams();
         Connection connection = new Connection(METHOD_FRIENDS_GET, userId, FORMAT_XML, 10, params);
         xml = connection.getXML().getFirstChild();
@@ -40,7 +43,7 @@ public class Friends implements VKObject{
             System.out.println(xml);
             System.out.println(ex.getMessage());
         }
-        saveXml();
+        //saveXml();
     }
 
     @Override
@@ -64,10 +67,10 @@ public class Friends implements VKObject{
         alUser_id.add(String.valueOf(userId));
         ArrayList<String> alOrder = new ArrayList<>();
         alOrder.add("order");
-        //alOrder.add(ORDER_HINTS);
+        alOrder.add(ORDER_HINTS);
         ArrayList<String> alCount = new ArrayList<>();
         alCount.add("count");
-        //alCount.add(String.valueOf(count));
+        alCount.add(String.valueOf(count));
         ArrayList<String> alFields = new ArrayList<>();
         alFields.add("fields");
         alFields.add("online");
@@ -76,8 +79,9 @@ public class Friends implements VKObject{
         alFields.add("photo_200_orig");
         params = new ArrayList<>();
         params.add(alUser_id);
-        //params.add(alOrder);
-        //params.add(alCount);
+        params.add(alOrder);
+        if (count != 0)
+            params.add(alCount);
         params.add(alFields);
     }
 
@@ -89,7 +93,7 @@ public class Friends implements VKObject{
             DOMSource source = new DOMSource(xml);
             StreamResult result = new StreamResult(new File("friends/friendsOfuser_" + userId + ".xml"));
             transformer.transform(source, result);
-            System.out.println("Saved: friendsOfuser_" + userId + ".xml");
+            //System.out.println("Saved: friendsOfuser_" + userId + ".xml");
         } catch (TransformerConfigurationException ex) {
             System.out.println(ex.getMessage());
         } catch (TransformerException ex) {

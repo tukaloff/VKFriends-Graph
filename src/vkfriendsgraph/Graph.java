@@ -5,13 +5,15 @@
  */
 package vkfriendsgraph;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
  * @author user
  */
-public class Graph {
+public class Graph implements Serializable {
     
     private ArrayList<Object[]> mainGraph = new ArrayList<>();
     private ArrayList<Object[]> index = new ArrayList<>();
@@ -26,6 +28,7 @@ public class Graph {
             ArrayList<Object[]> newEmptyList = new ArrayList<>();
             Object[] uObj = {user, newEmptyList};
             friendsList.add(uObj);
+            addIndex(user.getUserId(), level, path);
             return path;
         }
         else {
@@ -36,8 +39,13 @@ public class Graph {
             else {
                 ArrayList<Object[]> reqFriendsList = getListByLevel((int)reqUser[1], this.mainGraph, (int[])reqUser[2]);
                 for(int i = 0; i < reqFriendsList.size(); i++) {
-                    if(((int)reqUser[0]) == ((User)reqFriendsList.get(i)[0]).getUserId())
+                    if(((int)reqUser[0]) == ((User)reqFriendsList.get(i)[0]).getUserId()) {
                         friendsList.add(reqFriendsList.get(i));
+                        //ArrayList<Object[]> newEmptyList = new ArrayList<>();
+                        //Object[] uObj = {user, newEmptyList};
+                        //friendsList.add(uObj);
+                        return (int[])reqUser[2];
+                    }
                 }
             }
             return (int[])reqUser[2];
@@ -57,7 +65,7 @@ public class Graph {
                         }
                         else {
                             int[] newPath = new int[path.length - 1];
-                            for(int p = 0; p < path.length; p++) {
+                            for(int p = 0; p < path.length - 1; p++) {
                                 newPath[p] = path[p + 1];
                             }
                             return getListByLevel(level - 1, (ArrayList<Object[]>) list.get(j)[1], newPath);
@@ -84,6 +92,9 @@ public class Graph {
     private void addIndex(int userId, int level, int[] path) {
         Object[] ind = {userId, level, path};
         index.add(ind);
+        //System.out.println("uid=" + userId);
+        //System.out.println("level=" + level);
+        //System.out.println("path=" + Arrays.toString(path));
     }
     
     private Object[] getIndex(int userId) {
