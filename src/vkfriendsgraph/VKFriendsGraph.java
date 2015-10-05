@@ -31,7 +31,7 @@ public class VKFriendsGraph {
         String[] path;
         path = new String[] {"response", "uid"};
         int tryConnect = 10;
-        Processor processor = new Processor(USER_ID, 7, 2);
+        Processor processor = new Processor(USER_ID, 2, 0);
         processor.start(USER_ID);
     }
     

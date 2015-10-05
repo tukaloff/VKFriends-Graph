@@ -30,6 +30,11 @@ class User implements VKObject, Serializable {
     private String lastName;
     private String deactivated;
     
+    /**
+     * Конструктор Подготавливает параметры для GET-запроса к API,
+     * получает и парсит XML-документ
+     * @param userId - ID пользователя
+     */
     public User(int userId) {
         this.userId = userId;
         prepairParams();
@@ -39,10 +44,19 @@ class User implements VKObject, Serializable {
         //saveXml();
     }
     
+    /**
+     * Возвращает имя пользователя
+     * @return Имя + Фамилия 
+     */
     public String getName() {
         return firstName + " " + lastName;
     }
     
+    /**
+     * Конструктор создаёт объект класса на основе
+     * XML-записи
+     * @param node - XML-ветка
+     */
     public User(Node node) {
         //System.out.println(node);
         xml = node;
@@ -55,6 +69,15 @@ class User implements VKObject, Serializable {
         //saveXml();
     }
     
+    /**
+     * Реализует метод интерфейса.
+     * Парсит XML
+     * @param node - XML-ветка
+     * @param parent - идентификатор вызова. Не используется
+     * @throws IndexOutOfBoundsException - должен сообщить
+     * об ошибке чтения массива, возвращаемого классом-обработчиком
+     * XML-документа
+     */
     @Override
     public void parse(Node node, int parent) throws IndexOutOfBoundsException {
         String[] path;
@@ -84,6 +107,12 @@ class User implements VKObject, Serializable {
         //System.out.println(deactivated);
     }
     
+    /**
+     * Реализует метод интерфейса.
+     * Подготавливает параметры для GET-запроса
+     * в массив поле-значения
+     */
+    @Override
     public void prepairParams() {
         ArrayList<String> alUser_id = new ArrayList<String>();
         alUser_id.add("user_id");
@@ -154,6 +183,10 @@ class User implements VKObject, Serializable {
         params.add(alFields);
     }
 
+    /**
+     * Реализует метод интерфейса.
+     * Сохраняет XML-документ в файл в папке /users
+     */
     @Override
     public void saveXml() {
         try {
@@ -170,15 +203,28 @@ class User implements VKObject, Serializable {
         }
     }
 
+    /**
+     * Реализует метод интерфейса.
+     * Нет реализации
+     * @return 
+     */
     @Override
     public Document loadXml() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Возвращает ID пользователя
+     * @return UserID
+     */
     int getUserId() {
         return userId;
     }
     
+    /**
+     * Возвращает значение поля <deactivated>
+     * @return String - по-умолчанию ""
+     */
     public String getDeactivated() {
         return deactivated;
     }

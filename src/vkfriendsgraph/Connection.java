@@ -36,6 +36,15 @@ public class Connection {
     private String sParams;
     private ArrayList<ArrayList<String>> params;
     
+    /**
+     * Конструктор создаёт объект подключения с передаваемыми параметрами
+     * и пробует послать GET-запрос
+     * @param methosName - название вызываемого метода
+     * @param UserID - ID пользователя
+     * @param respType - тип ответа XML/JSON
+     * @param tryOut - количество попыток подключения
+     * @param params - массив пар поле-значения
+     */
     public Connection(String methosName, int UserID, String respType, int tryOut, ArrayList<ArrayList<String>> params) {
         this.params = params;
         paramsToString();
@@ -48,6 +57,9 @@ public class Connection {
         }        
     }
     
+    /**
+     * Формирует из массива с параметрами строку с параметрами
+     */
     private void paramsToString() {
         sParams = "";
         for (int i = 0; i < params.size(); i++) {
@@ -68,6 +80,13 @@ public class Connection {
         }
     }
 
+    /**
+     * Реализует GET-запрос
+     * @param methodName - вызываемый в API метод
+     * @param answerType - тип ответа
+     * @param USER_ID - ID пользователя
+     * @return true - успешно выполнен; false - выполнен с ошибкой
+     */
     private boolean tryHTTPS_GET (String methodName, String answerType, long USER_ID) {
         try {
             //Генерируем строку запроса
@@ -98,11 +117,21 @@ public class Connection {
         return false;
     }
     
+    /**
+     * Возвращает объект JSON-парсера.
+     * Не используется
+     * @return объект JSON-парсера
+     */
     public JSONParser getJSON() {
         JSONParser jSONParser = new JSONParser(new Source("Friends.Get", sJSON), null);
         return jSONParser;
     }
     
+    /**
+     * Возвращает XML-документ.
+     * null - выполнилось с ошибкой
+     * @return объект XML-документа
+     */
     public Document getXML() {
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(

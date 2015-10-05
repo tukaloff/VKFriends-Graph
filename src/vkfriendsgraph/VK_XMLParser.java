@@ -20,23 +20,48 @@ class VK_XMLParser {
     private ArrayList<Node> resultArray = new ArrayList<>();
     private ArrayList<String[]> sArray = new ArrayList<>();
 
+    /**
+     * Конструктор для XML-документа
+     * @param xml - XML-документ
+     * @param path - путь к возвращаемому значению
+     */
     public VK_XMLParser(Document xml, String[] path) {
         readRecursive(xml.getChildNodes(), path);
     }
     
+    /**
+     * Конструктор для XML-ветки
+     * @param xml - XML-ветка
+     * @param path - путь к возвращаемому значению
+     */
     public VK_XMLParser(Node node, String[] path) throws NullPointerException{
         readRecursive(node.getChildNodes(), path);
     }
     
+    /**
+     * Получает сохранённое значение из массива
+     * @param position - позиция элемента в массиве
+     * @return объект String
+     */
     public String getValue(int position) {
         return sArray.get(position)[1];
         //return resultArray.get(position).getNodeValue();
     }
     
+    /**
+     * Возвращает величину массива созранённых значений
+     * @return длина массива
+     */
     public int getLenght() {
         return sArray.size();
     }
     
+    /**
+     * Рекурсивный метод.
+     * Читает XML-дерево, находит искомую ветку и сохраняет значение
+     * @param childNodes - XML-ветка поиска
+     * @param path - путь поиска
+     */
     private void readRecursive(NodeList childNodes, String[] path) {
         for (int i = 0; i < path.length; i++) {
             if (i + 1 == path.length) {
@@ -66,7 +91,11 @@ class VK_XMLParser {
         }
     }
     
-    
+    /**
+     * Метод поиска значения в XML-документе
+     * @deprecated Не работает
+     * @param xml XML-документ
+     */
     public void failVK_XMLParser(Document xml) {
         System.out.println(xml.getChildNodes().item(0).getChildNodes().item(0).getNodeValue());
         ArrayList<Object[]> parsingArray = new ArrayList<>();

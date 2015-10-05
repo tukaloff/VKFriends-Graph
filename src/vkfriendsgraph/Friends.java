@@ -30,6 +30,13 @@ public class Friends implements VKObject{
     private final String ORDER_HINTS = "hints";
     private int count;
     
+    /**
+     * Конструктор Подготавливает параметры для GET-запроса к API,
+     * получает и парсит XML-документ
+     * @param userId - ID пользователя, для которого нужно вернуть 
+     * список друзей
+     * @param count - количество возвращаемых друзей
+     */
     public Friends(int userId, int count) {
         this.userId = userId;
         this.count = count;
@@ -46,6 +53,13 @@ public class Friends implements VKObject{
         //saveXml();
     }
 
+    /**
+     * Реализует метод интерфейса.
+     * Парсит XML. Сохраняет в объекте класса 
+     * массив с объектами User
+     * @param node - XML-ветка
+     * @param parent - идентификатор вызова. Не используется
+     */
     @Override
     public void parse(Node node, int parent) {
         friends = new ArrayList<>();
@@ -56,10 +70,19 @@ public class Friends implements VKObject{
         }
     }
     
+    /**
+     * Возвращает массив пользователей - друзей указанного пользователя
+     * @return Массив User
+     */
     public ArrayList<User> getArrayOfUsers() {
         return friends;
     }
 
+    /**
+     * Реализует метод интерфейса.
+     * Подготавливает параметры для GET-запроса
+     * в массив поле-значения
+     */
     @Override
     public void prepairParams() throws IndexOutOfBoundsException {
         ArrayList<String> alUser_id = new ArrayList<>();
@@ -85,6 +108,10 @@ public class Friends implements VKObject{
         params.add(alFields);
     }
 
+    /**
+     * Реализует метод интерфейса.
+     * Сохраняет XML-документ в файл в папке /friends
+     */
     @Override
     public void saveXml() {
         try {
@@ -101,6 +128,11 @@ public class Friends implements VKObject{
         }
     }
 
+    /**
+     * Реализует метод интерфейса.
+     * Нет реализации
+     * @return 
+     */
     @Override
     public Document loadXml() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
