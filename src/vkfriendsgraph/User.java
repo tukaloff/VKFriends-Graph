@@ -222,7 +222,7 @@ class User implements VKObject, Serializable {
     }
     
     /**
-     * Возвращает значение поля <deactivated>
+     * Возвращает значение поля deactivated
      * @return String - по-умолчанию ""
      */
     public String getDeactivated() {
