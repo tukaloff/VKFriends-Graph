@@ -72,7 +72,13 @@ public class Processor {
          * помечен, как deleted
          */
         User rootUser = new User(userId);
-        int[] newPutPath = graph.put(rootUser, path.length - 1, path);
+        int[] newPutPath;
+        //if (path.length == 0) {
+        //    newPutPath = graph.put(rootUser, path.length, path);
+        //}
+        //} else {
+            newPutPath = graph.put(rootUser, path.length, path);
+        //}
         if (!path.equals(newPutPath) && newPutPath.length != iterations)
             return;
         if (!(rootUser.getDeactivated()=="" && !(rootUser.getDeactivated()=="deleted")))
@@ -87,16 +93,18 @@ public class Processor {
         if (path.length != iterations) {
             for (int i = 0; i < aFriends.size(); i++) {
                 totalCount++;
-                //waitRequest();
+                waitRequest();
                 //User childUser = new User(aFriends.get(i).getUserId());
                 //aFriends.set(i, childUser);
                 if (aFriends.get(i).getDeactivated()=="" && !(aFriends.get(i).getDeactivated()=="deleted"))
                     if (aFriends.get(i).getUserId() == 0)
                         return;
+                /*
                 System.out.print(totalCount + ". \t" + i + ": \t");
                 for (int c = 0; c < path.length; c++)
                     System.out.print("|\t");
                 System.out.println(aFriends.get(i).getUserId() + " \t" + aFriends.get(i).getName());
+                */
                 int[] newPath = new int[path.length + 1];
                 System.arraycopy(path, 0, newPath, 0, path.length);
                 newPath[newPath.length - 1] = userId;

@@ -5,6 +5,12 @@
  */
 package vkfriendsgraph;
 
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Toolkit;
+import javax.swing.WindowConstants;
+import static vkfriendsgraph.Utils.resetDimension;
+
 /**
  *
  * @author user
@@ -15,7 +21,20 @@ public class VKFriendsGraph {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension newDim = resetDimension(dim, 70);
+        
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                MainFrame frame = new MainFrame(newDim.width, newDim.height);
+                frame.setSize(newDim);
+                frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+        });
         /*
         System.out.println(new GregorianCalendar().toInstant());
         try {
@@ -24,15 +43,7 @@ public class VKFriendsGraph {
             System.out.println(ex.getMessage());
         }
         System.out.println(new GregorianCalendar().toInstant());
-        */
-        int USER_ID = Integer.valueOf(args[0]);
-        //int USER_ID = Integer.valueOf(1039324);//208);//88374578);//8308498);
-        System.out.println(USER_ID);
-        String[] path;
-        path = new String[] {"response", "uid"};
-        int tryConnect = 10;
-        Processor processor = new Processor(USER_ID, 2, 0);
-        processor.start(USER_ID);
+        */        
     }
     
 }

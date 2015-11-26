@@ -7,7 +7,6 @@ package vkfriendsgraph;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  *
@@ -37,7 +36,7 @@ public class Graph implements Serializable {
             ArrayList<Object[]> newEmptyList = new ArrayList<>();
             Object[] uObj = {user, newEmptyList};
             friendsList.add(uObj);
-            addIndex(user.getUserId(), level, path);
+            addIndex(user.getUserId(), level, path, null);
             showReads();
             return path;
         }
@@ -68,7 +67,7 @@ public class Graph implements Serializable {
      * Выводит количество чтений массивов (debug)
      */
     private void showReads() {
-        System.out.println("Index reads: \t" + indexReads + ". \tTotal reads: \t" + reads);
+        //System.out.println("Index reads: \t" + indexReads + ". \tTotal reads: \t" + reads);
         indexReads = reads = 0;
     }
     
@@ -140,8 +139,8 @@ public class Graph implements Serializable {
      * @param level - уровень
      * @param path - путь
      */
-    private void addIndex(int userId, int level, int[] path) {
-        Object[] ind = {userId, level, path};
+    private void addIndex(int userId, int level, int[] path, int[] fastPath) {
+        Object[] ind = {userId, level, path, fastPath};
         index.add(ind);
         //System.out.println("uid=" + userId);
         //System.out.println("level=" + level);
