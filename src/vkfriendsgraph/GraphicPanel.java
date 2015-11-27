@@ -5,6 +5,7 @@
  */
 package vkfriendsgraph;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -75,14 +76,20 @@ public class GraphicPanel extends JPanel {
         try {
         for(int i = 0; i < arrayShapes.size(); i++) {
             Shape line = (Shape) (arrayShapes.get(i)[1]);
+            if ((boolean)arrayShapes.get(i)[6])
+                g2.setColor(Color.blue);
+            else
+                g2.setColor(Color.black);
+            g2.setStroke(new BasicStroke((float) 1.3));
             g2.draw(line);
+            g2.setColor(Color.black);
             /*
             TextLayout tl = new TextLayout((String) (arrayShapes.get(i)[3]), 
                     new Font("Serif", Font.CENTER_BASELINE, 10),
                     g2.getFontRenderContext());
             Shape text = tl.getOutline(new AffineTransform());
             g2.draw(text);*/
-            g2.setFont(new Font(Font.SERIF, Font.PLAIN, 8));
+            g2.setFont(new Font(Font.SERIF, Font.PLAIN, 10));
             g2.drawString((String) (arrayShapes.get(i)[3]), 
                     Double.valueOf(((Point2D.Double)arrayShapes.get(i)[2]).getX()).intValue(),
                     Double.valueOf(((Point2D.Double)arrayShapes.get(i)[2]).getY()).intValue());
@@ -156,42 +163,45 @@ public class GraphicPanel extends JPanel {
     
     private void prepairShapes(ArrayList<Object[]> innerArray, 
             Point2D enterPoint, double containerAngle, double parentAngle, double radius) {
-        System.out.println(parentAngle);
-        if (parentAngle > 360)
-            parentAngle -= 360;
-        else if (parentAngle < 0)
-            parentAngle = 360 - parentAngle;
+        //parentAngle = normalizeAngle(parentAngle);
+        
         double angle;
-        if (innerArray.size() <= 1) {
-            angle = parentAngle;
-        }
-        else {
+        if (innerArray.size() == 0) {
+            angle = 0;
+        } else {
             angle = containerAngle / innerArray.size();
         }
+        int friendsCount = 0;
+        ArrayList<Object[]> notRepeatUsers = new ArrayList<>();
         double newRadius = radius / F;
-        int k = 0;
         for (int i = 0; i < innerArray.size(); i++) {
-            Object[] userF = innerArray.get(i);
-            User user = (User) userF[0];
+            User user = (User) innerArray.get(i)[0];
             if (!checkPoint(user.getUserId())) {
-                k++;
-                double newAngle = parentAngle - (containerAngle / 2) + (angle * (k));
-                if (newAngle > 360)
-                    newAngle -= 360;
-                else if (newAngle < 0)
-                    newAngle = 360 - newAngle;
-                Point2D pointOnCicle = getPointOnCicle(enterPoint, 
-                        newAngle, newRadius);
+                friendsCount++;
+                double newAngle = parentAngle - (containerAngle / 2) + angle * friendsCount;
+                //newAngle = normalizeAngle(newAngle);
+                Point2D pointOnCicle = getPointOnCicle(enterPoint, newAngle, newRadius);
                 Line2D line = new Line2D.Double(enterPoint, pointOnCicle);
-                Object[] obj = {user, line, pointOnCicle, user.getName()};
+                Object[] obj = {user, line, pointOnCicle, user.getName(), innerArray.get(i)[1], newAngle, false};
+                notRepeatUsers.add(obj);
                 arrayShapes.add(obj);
-                try {
-                    //System.out.println(k++);
-                    prepairShapes((ArrayList<Object[]>) userF[1], pointOnCicle, 
-                            containerAngle / 3 * 2, newAngle, newRadius);
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
+            } else {
+                Point2D pointOnCicle = findPoint(user.getUserId());
+                Line2D line = new Line2D.Double(enterPoint, pointOnCicle);
+                Object[] obj = {user, line, pointOnCicle, user.getName(), innerArray.get(i)[1], angle, true};
+                arrayShapes.add(obj);
+            }
+        }
+        
+        for (int i = 0; i < notRepeatUsers.size(); i++) {
+            try {
+                prepairShapes((ArrayList<Object[]>)notRepeatUsers.get(i)[4], 
+                        (Point2D)notRepeatUsers.get(i)[2],
+                        containerAngle / 3 * 2, 
+                        (double)notRepeatUsers.get(i)[5], 
+                        newRadius);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -203,6 +213,15 @@ public class GraphicPanel extends JPanel {
                 return true;
         }
         return false;
+    }
+    
+    private Point2D findPoint(int userId) {
+        for (Object[] aShape : arrayShapes) {
+            User user = (User) aShape[0];
+            if (userId == user.getUserId())
+                return (Point2D) aShape[2];
+        }
+        return null;
     }
     
     private Point2D getPointOnCicle(Point2D enterPoint, double angle, double radius) {
@@ -222,10 +241,13 @@ public class GraphicPanel extends JPanel {
     
     private double jnormalizeY (double y) {
         return height - y;
-    }
+    }    
 
-    private Object User(Object get) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private double normalizeAngle(double angle) {
+        if (angle > 360)
+            angle -= 360;
+        else if (angle < 0)
+            angle = 360 - angle;
+        return angle;
     }
-    
 }

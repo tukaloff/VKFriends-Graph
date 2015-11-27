@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,7 +66,7 @@ public class Processor {
      * @param userId - ID пользователя - корня ветки
      * @param path - путь к пользователю - массив UserID
      */
-    private void process (int userId, int[] path) {
+    private void process1 (int userId, int[] path) {
         /**
          * Получаем пользователя. Выходим, если пользователь
          * находится на нижнем уровне или если пользователь
@@ -113,13 +114,66 @@ public class Processor {
         }
     }
     
+    private void process (int userId, int[] path) {
+        if (path.length == iterations) {
+            ArrayList<User> aFriends = new Friends(userId, friendsCount).getArrayOfUsers();
+            int[] newPath = new int[path.length + 1];
+            System.arraycopy(path, 0, newPath, 0, path.length);
+            newPath[newPath.length - 1] = userId;
+            for (int i = 0; i < aFriends.size(); i++) {
+                waitRequest();
+                if (aFriends.get(i).getDeactivated()=="" && !(aFriends.get(i).getDeactivated()=="deleted"))
+                    if (aFriends.get(i).getUserId() == 0) {
+                        graph.put(aFriends.get(i), newPath.length, newPath);
+                        continue;
+                    }
+                User friend = new User(aFriends.get(i).getUserId());
+                graph.put(friend, newPath.length, newPath);
+            }
+            return;
+        }
+        if (path.length == 0) {
+            User me = new User(userId);
+            graph.put(me, 0, path);
+        }
+        ArrayList<User> aFriends = new Friends(userId, friendsCount).getArrayOfUsers();
+        ArrayList<int[]> aPath = new ArrayList<>();
+        int[] newPath = new int[path.length + 1];
+        newPath[newPath.length - 1] = userId;
+        System.arraycopy(path, 0, newPath, 0, path.length);
+        for (int i = 0; i < aFriends.size(); i++) {
+            waitRequest();
+            if (aFriends.get(i).getDeactivated()=="" && !(aFriends.get(i).getDeactivated()=="deleted"))
+                if (aFriends.get(i).getUserId() == 0) {
+                    aPath.add(path);
+                    graph.put(aFriends.get(i), newPath.length, newPath);
+                    continue;
+                }
+            User friend = new User(aFriends.get(i).getUserId());
+            int[] friendPath = graph.put(friend, newPath.length, newPath);
+            aPath.add(friendPath);
+        }
+        for (int i = 0; i < aFriends.size(); i ++) {
+            if (path.length == 0) {
+                process(aFriends.get(i).getUserId(),
+                        aPath.get(i));
+            } else if (aPath.get(i)[aPath.get(i).length - 1] == path[path.length - 1]) {
+                continue;
+            } else {
+                process(aFriends.get(i).getUserId(),
+                        aPath.get(i));
+            }
+        }
+        
+    }
+    
     /**
      * Метод ожидания. Предназначен для соблюдения регламента
      * обращений к API VK
      */
     private void waitRequest() {
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (InterruptedException ex) {
             System.out.println(ex.getMessage());
         }
