@@ -55,9 +55,9 @@ public class Processor {
             oos.flush();
             oos.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -115,8 +115,15 @@ public class Processor {
     }
     
     private void process (int userId, int[] path) {
+        Friends friends = new Friends(userId, friendsCount);
+        if (friends.isError()) {
+            return;
+        }
+        ArrayList<User> aFriends = friends.getArrayOfUsers();
         if (path.length == iterations) {
-            ArrayList<User> aFriends = new Friends(userId, friendsCount).getArrayOfUsers();
+            if (userId == 172) {
+                System.out.println("There");
+            }
             int[] newPath = new int[path.length + 1];
             System.arraycopy(path, 0, newPath, 0, path.length);
             newPath[newPath.length - 1] = userId;
@@ -136,7 +143,7 @@ public class Processor {
             User me = new User(userId);
             graph.put(me, 0, path);
         }
-        ArrayList<User> aFriends = new Friends(userId, friendsCount).getArrayOfUsers();
+        //ArrayList<User> aFriends = new Friends(userId, friendsCount).getArrayOfUsers();
         ArrayList<int[]> aPath = new ArrayList<>();
         int[] newPath = new int[path.length + 1];
         newPath[newPath.length - 1] = userId;
@@ -151,12 +158,19 @@ public class Processor {
                 }
             User friend = new User(aFriends.get(i).getUserId());
             int[] friendPath = graph.put(friend, newPath.length, newPath);
-            aPath.add(friendPath);
+            if (newPath == friendPath) {
+                aPath.add(friendPath);
+            }
+            else {
+                aPath.add(null);
+            }
         }
         for (int i = 0; i < aFriends.size(); i ++) {
             if (path.length == 0) {
                 process(aFriends.get(i).getUserId(),
                         aPath.get(i));
+            } else if (aPath.get(i) == null) {
+                continue;
             } else if (aPath.get(i)[aPath.get(i).length - 1] == path[path.length - 1]) {
                 continue;
             } else {

@@ -29,6 +29,7 @@ public class Friends implements VKObject{
     private ArrayList<User> friends;
     private final String ORDER_HINTS = "hints";
     private int count;
+    private boolean isError;
     
     /**
      * Конструктор Подготавливает параметры для GET-запроса к API,
@@ -38,6 +39,10 @@ public class Friends implements VKObject{
      * @param count - количество возвращаемых друзей
      */
     public Friends(int userId, int count) {
+        isError = false;
+        if (userId == 172) {
+            System.out.println("There");
+        }
         this.userId = userId;
         this.count = count;
         prepairParams();
@@ -45,12 +50,20 @@ public class Friends implements VKObject{
         xml = connection.getXML().getFirstChild();
         //System.out.println(xml.getTextContent());
         try {
+            if (xml.getNodeName().equals("error")) {
+                isError = true;
+                return;
+            }
             parse(xml, 2);
         } catch (Exception ex) {
             System.out.println(xml);
             System.out.println(ex.getMessage());
         }
         //saveXml();
+    }
+    
+    public boolean isError() {
+        return isError;
     }
 
     /**

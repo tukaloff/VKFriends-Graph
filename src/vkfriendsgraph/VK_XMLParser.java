@@ -116,7 +116,7 @@ class VK_XMLParser {
                         try {
                             element[1] = ((NodeList)paElement).item(i).getChildNodes();
                         } catch (Exception e) {
-                            System.out.println(e.getMessage());
+                            System.out.println("123" + e.getMessage());
                             element[1] = ((NodeList)paElement).item(i).getNodeValue();
                         }
                         parsingArray.add(element);

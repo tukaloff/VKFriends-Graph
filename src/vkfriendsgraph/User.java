@@ -40,9 +40,16 @@ class User implements VKObject, Serializable {
         prepairParams();
         Connection connection = new Connection(METHOD_USER_GET, userId, FORMAT_XML, 10, params);
         xml = connection.getXML().getFirstChild().getLastChild();
+        if (xml.getNodeName().equals("error")) {
+            System.out.println("UserError");
+        }
         try {
             parse(xml, XML_PARENT_MAIN_USER);
+            if (getName().equals("Наталья Бархатова")) {
+                System.out.println("Наталья Бархатова");
+            }
         } catch (Exception e) {
+            System.out.println(xml);
             System.out.println(e.getMessage());
         }
         //saveXml();

@@ -34,13 +34,13 @@ public class MainFrame extends JFrame {
 
             @Override
             public void run() {
-                int USER_ID = 76141154;
+                int USER_ID = 76141154;//88374578
                 //int USER_ID = Integer.valueOf(1039324);//208);//88374578);//8308498);
                 System.out.println(USER_ID);
                 String[] path;
                 path = new String[] {"response", "uid"};
                 int tryConnect = 10;
-                processor = new Processor(USER_ID, 3, 4);
+                processor = new Processor(USER_ID, 3, 20);
                 processor.start(USER_ID);
                 System.out.println("Processor finished");
             }
