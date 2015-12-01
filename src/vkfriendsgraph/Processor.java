@@ -5,14 +5,13 @@
  */
 package vkfriendsgraph;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -51,13 +50,23 @@ public class Processor {
         try {
             FileOutputStream fos = new FileOutputStream("Graph.vkg");
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(graph.getArrayGraph());
+            oos.writeObject(graph);
             oos.flush();
             oos.close();
         } catch (FileNotFoundException ex) {
             //Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             //Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void readFromFile() {
+        try {
+            FileInputStream fis = new FileInputStream("Graph.vkg");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            graph = (Graph) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
         }
     }
     

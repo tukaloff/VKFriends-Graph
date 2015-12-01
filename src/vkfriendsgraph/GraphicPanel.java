@@ -139,7 +139,13 @@ public class GraphicPanel extends JPanel {
                         graphCreated = false;
                     }
                     if (!failed) {
-                        graphCreated = true;
+                        if (arrayGraph.size() == 0) {
+                            graphCreated = false;
+                        }
+                        else {
+                            System.out.println("Loaded");
+                            graphCreated = true;
+                        }
                     }
                 }
                 arrayShapes = new ArrayList<>();
