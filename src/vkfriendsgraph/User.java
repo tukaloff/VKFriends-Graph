@@ -239,4 +239,12 @@ class User implements VKObject, Serializable {
     public String getDeactivated() {
         return deactivated;
     }
+
+    String getFirstName() {
+        return firstName;
+    }
+
+    String getLastName() {
+        return lastName;
+    }
 }

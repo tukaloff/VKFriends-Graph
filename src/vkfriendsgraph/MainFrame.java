@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
                 String[] path;
                 path = new String[] {"response", "uid"};
                 int tryConnect = 10;
-                processor = new Processor(USER_ID, 3, 20);
+                processor = new Processor(USER_ID, 4, 5);
                 processor.start(USER_ID);
                 System.out.println("Processor finished");
             }
