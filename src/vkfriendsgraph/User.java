@@ -19,7 +19,7 @@ import org.w3c.dom.Node;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 class User implements VKObject, Serializable {
     
@@ -45,9 +45,6 @@ class User implements VKObject, Serializable {
         }
         try {
             parse(xml, XML_PARENT_MAIN_USER);
-            if (getName().equals("Наталья Бархатова")) {
-                System.out.println("Наталья Бархатова");
-            }
         } catch (Exception e) {
             System.out.println(xml);
             System.out.println(e.getMessage());
@@ -74,7 +71,7 @@ class User implements VKObject, Serializable {
         try {
             parse(node, XML_PARENT_FRIEND);
         } catch (Exception ex) {
-            System.out.println(xml);
+            System.out.println("public User(Node node):" + xml);
             System.out.println(ex.getMessage());
         }
         //saveXml();
@@ -116,6 +113,12 @@ class User implements VKObject, Serializable {
         else
             deactivated = "";
         //System.out.println(deactivated);
+        
+        path = new String[] {"user", "nickname"};
+        xmlParser = new VK_XMLParser(node, path);
+        if (xmlParser.getValue(0).equals("tworogue")) {
+            System.out.println("tworogue");
+        }
     }
     
     /**

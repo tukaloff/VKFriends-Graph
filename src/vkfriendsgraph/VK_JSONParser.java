@@ -11,7 +11,7 @@ import jdk.nashorn.internal.parser.JSONParser;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class VK_JSONParser {
     

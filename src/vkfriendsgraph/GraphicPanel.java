@@ -24,12 +24,14 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import vkfriendsgraph.Utils;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class GraphicPanel extends JPanel {
     
@@ -37,128 +39,38 @@ public class GraphicPanel extends JPanel {
     ArrayList<Object[]> arrayShapes;
     boolean isRunning;
     Rectangle rect;
-    final double F = (1 + Math.sqrt(5))/ 2;
+    
     double width, height;
     double growingCoef = 0.5;
     double scale = 1;
     double radius;
+    Processor processor;
+    Graph graph;
     
     double diffX = 0;
     double diffY = 0;
     
+    int fps = 50;
+    
     Point2D startPoint;
 
-    GraphicPanel(Rectangle rect, MainFrame mainFrame) {
+    GraphicPanel(Rectangle rect, Processor processor) {
         super();
+        this.processor = processor;
+        GraphicPanelMouseListener mouseListener = new GraphicPanelMouseListener();
         
-        this.addMouseListener(new MouseListener() {
-
-            @Override
-            public void mouseClicked(MouseEvent me) {
-                
-            }
-
-            @Override
-            public void mousePressed(MouseEvent me) {
-                System.out.println("pressed");
-                diffX = startPoint.getX() - me.getX();
-                diffY = startPoint.getY() - me.getY();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent me) {
-                System.out.println("released");
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent me) {
-                
-            }
-
-            @Override
-            public void mouseExited(MouseEvent me) {
-                
-            }
-        });
-        
-        this.addMouseMotionListener(new MouseMotionListener() {
-
-            @Override
-            public void mouseDragged(MouseEvent me) {
-                startPoint = new Point2D.Double(me.getX() + diffX, me.getY() + diffY);
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent me) {
-                
-            }
-        });
-        
-        this.addMouseWheelListener(new MouseWheelListener() {
-
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent mwe) {
-                
-                System.out.println("mwe: " + mwe.paramString());
-                double x3;
-                double y3;
-                if (scale != 1 || scale != -1) {
-                    if (mwe.getWheelRotation() < 0) {//увеличение
-                        scale *= 1.2;
-                        x3 = mwe.getX() + (startPoint.getX() - mwe.getX()) * 1.2;
-                        y3 = mwe.getY() + (startPoint.getY() - mwe.getY()) * 1.2;
-                    }
-                    else {//уменьшение
-                        scale /= 1.2;
-                        x3 = (startPoint.getX() - mwe.getX()) / 1.2 + mwe.getX();
-                        y3 = (startPoint.getY() - mwe.getY()) / 1.2 + mwe.getY();
-                    }
-                    startPoint = new Point2D.Double(x3, y3);
-                }
-            }
-        });
-        /*
-        this.rect = rect;
-        width = rect.width;
-        height = rect.height;
-        */
+        this.addMouseListener(mouseListener);
+        this.addMouseMotionListener(mouseListener);
+        this.addMouseWheelListener(mouseListener);
         isRunning = true;
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBounds(rect);
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                boolean graphCreated = false;
-                while(!graphCreated) {
-                    boolean failed = false;
-                    try {
-                        arrayGraph = mainFrame.processor.graph.getArrayGraph();
-                    } catch (Exception ex) {
-                        failed = true;
-                        graphCreated = false;
-                    }
-                    if (!failed) {
-                        if (arrayGraph.size() == 0) {
-                            graphCreated = false;
-                        }
-                        else {
-                            System.out.println("Loaded");
-                            graphCreated = true;
-                        }
-                    }
-                }
-                arrayShapes = new ArrayList<>();
-                runRepainter();
-            }
-        }).start();
-
+        new Thread(new GraphListener()).start();
     }
     
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //System.out.println("paintComponent");
         width = this.getWidth();
         height = this.getHeight();
         radius = height / 2;
@@ -181,18 +93,6 @@ public class GraphicPanel extends JPanel {
                 g2.setStroke(new BasicStroke((float) 1.3));
                 g2.draw(line);
                 g2.setColor(Color.black);
-                /*
-                TextLayout tl = new TextLayout((String) (arrayShapes.get(i)[3]), 
-                        new Font("Serif", Font.CENTER_BASELINE, 10),
-                        g2.getFontRenderContext());
-                Shape text = tl.getOutline(new AffineTransform());
-                g2.draw(text);*/
-                //g2.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
-                /*
-                g2.drawString((String) (arrayShapes.get(i)[3]), //Integer.toString(Double.valueOf((double) (arrayShapes.get(i)[3])).intValue()), 
-                        Double.valueOf(((Point2D.Double)arrayShapes.get(i)[2]).getX()).intValue(),
-                        Double.valueOf(((Point2D.Double)arrayShapes.get(i)[2]).getY()).intValue());
-                */
             }
             
             for(int i = 0; i < arrayShapes.size(); i++) {
@@ -202,7 +102,7 @@ public class GraphicPanel extends JPanel {
                 Rectangle2D fNameRect = font.getStringBounds(firstName, context);
                 Rectangle2D lNameRect = font.getStringBounds(lastName, context);
                 double fullWidth = (fNameRect.getWidth() > lNameRect.getWidth() ? fNameRect.getWidth() : lNameRect.getWidth());
-                double fullHeight = fNameRect.getHeight()/* - fNameRect.getY()*/ + lNameRect.getHeight()/* - lNameRect.getY()*/;
+                double fullHeight = fNameRect.getHeight() + lNameRect.getHeight();
                 
                 Ellipse2D ellipse = new Ellipse2D.Double(point.getX() - (fullWidth > fullHeight ? fullWidth / 2 : fullHeight / 2), 
                         point.getY() - (fullWidth > fullHeight ? fullWidth / 2 : fullHeight / 2), 
@@ -222,14 +122,11 @@ public class GraphicPanel extends JPanel {
                         (float)(point.getY() - fullHeight / 2 - fNameRect.getY()));
                 g2.drawString(lastName, (float)(point.getX() - lNameRect.getWidth() / 2), 
                         (float)(point.getY() + fullHeight / 2 - lNameRect.getHeight() - lNameRect.getY()));
-                
-                
             }
             
         } catch (Exception e) {
-            System.out.println("123" + e.getMessage());
+            System.out.println(this.getClass() + ": paintComponent(): " + e.getMessage());
         }
-        //System.out.println("paintComponent complit");
     }
     
     private void runRepainter() {
@@ -237,42 +134,8 @@ public class GraphicPanel extends JPanel {
         height = this.getHeight();
         radius = height / 2;
         startPoint = new Point2D.Double(width / 2, height / 2);
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                while(isRunning) {
-                    try {
-                        int k = 0;
-                        Thread.sleep(100);
-                        arrayShapes.clear();
-                        double radius = height / 2;
-                        radius *= scale;
-                        //radius -= radius * growingCoef;
-                        growingCoef = growingCoef / 1.005;
-                        //radius += radius * growingCoef;
-                        if (arrayGraph.size() > 0 && height > 0) {
-                            ArrayList<Object[]> innerArray = arrayGraph;//(ArrayList<Object[]>)arrayGraph.get(0)[1];
-                            prepairShapes(innerArray, startPoint,//new Point2D.Double(width / 2, height / 2), 
-                                    360, 360, radius, true);
-                        }
-                        /*
-                        k = 0;
-                        test(new Point2D.Double(width / 2, 
-                                height / 2), 
-                                360, 0, height / 3);
-                                */
-                        repaint();
-                        //isRunning = false;
-                    } catch (Exception ex) {
-                        System.out.println("147" + ex.getMessage());
-                    }
-                }
-            }
-        }).start();
+        new Thread(new GraphReader()).start();
     }
-    
-    int k = 0;
     
     private void prepairShapes(ArrayList<Object[]> innerArray, 
             Point2D enterPoint, double containerAngle, double parentAngle, double radius, boolean isMe) {
@@ -282,7 +145,7 @@ public class GraphicPanel extends JPanel {
             Object[] obj = {me, line, enterPoint, me.getName(), innerArray.get(0)[1], 0, false};
             //notRepeatUsers.add(obj);
             arrayShapes.add(obj);
-            prepairShapes((ArrayList<Object[]>)arrayGraph.get(0)[1], startPoint,//new Point2D.Double(width / 2, height / 2), 
+            prepairShapes((ArrayList<Object[]>)arrayGraph.get(0)[1], startPoint,
                                     360, 360, radius, false);
             return;
         }
@@ -302,7 +165,7 @@ public class GraphicPanel extends JPanel {
             }
         }
         ArrayList<Object[]> notRepeatUsers = new ArrayList<>();
-        double newRadius = radius / F;
+        double newRadius = radius / Utils.F;
         friendsCount = 0;
         for (int i = 0; i < innerArray.size(); i++) {
             User user = (User) innerArray.get(i)[0];
@@ -391,5 +254,121 @@ public class GraphicPanel extends JPanel {
             return angle;
         }
         return angle;
+    }
+    
+    private class GraphicPanelMouseListener 
+        implements MouseListener, MouseMotionListener, MouseWheelListener {
+
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                
+            }
+
+            @Override
+            public void mousePressed(MouseEvent me) {
+                diffX = startPoint.getX() - me.getX();
+                diffY = startPoint.getY() - me.getY();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent me) {
+                
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me) {
+                
+            }
+            
+            @Override
+            public void mouseDragged(MouseEvent me) {
+                startPoint = new Point2D.Double(me.getX() + diffX, me.getY() + diffY);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent me) {
+                
+            }
+            
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent mwe) {
+                double x3;
+                double y3;
+                if (scale != 1 || scale != -1) {
+                    if (mwe.getWheelRotation() < 0) {//увеличение
+                        scale *= 1.2;
+                        x3 = mwe.getX() + (startPoint.getX() - mwe.getX()) * 1.2;
+                        y3 = mwe.getY() + (startPoint.getY() - mwe.getY()) * 1.2;
+                    }
+                    else {//уменьшение
+                        scale /= 1.2;
+                        x3 = (startPoint.getX() - mwe.getX()) / 1.2 + mwe.getX();
+                        y3 = (startPoint.getY() - mwe.getY()) / 1.2 + mwe.getY();
+                    }
+                    startPoint = new Point2D.Double(x3, y3);
+                }
+            }
+        }
+    
+    private class GraphListener implements Runnable {
+
+            @Override
+            public void run() {
+                boolean graphCreated = false;
+                while(!graphCreated) {
+                    boolean failed = false;
+                    try {
+                        graph = processor.getGraph();
+                        arrayGraph = graph.getArrayGraph();
+                    } catch (Exception ex) {
+                        failed = true;
+                        graphCreated = false;
+                    }
+                    if (!failed) {
+                        if (arrayGraph.size() == 0) {
+                            graphCreated = false;
+                        }
+                        else {
+                            System.out.println("Loaded");
+                            graphCreated = true;
+                        }
+                    }
+                }
+                arrayShapes = new ArrayList<>();
+                runRepainter();
+            }
+    }
+    
+    private class GraphReader implements Runnable {
+
+        @Override
+        public void run() {
+            while(isRunning) {
+                try {
+                    long msStart = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
+                    arrayShapes.clear();
+                    double radius = height / 2;
+                    radius *= scale;
+                    growingCoef = growingCoef / 1.005;
+                    if (arrayGraph.size() > 0 && height > 0) {
+                        ArrayList<Object[]> innerArray = arrayGraph;
+                        if (processor.isFinished())
+                            prepairShapes(innerArray, startPoint,
+                                360, 360, radius, true);
+                    }
+                    repaint();
+                    long msEnd = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
+                    int diff = (int)((msEnd - msStart) < 0 ? 0 : (msEnd - msStart));
+                    Thread.sleep((1000 - diff) / fps);
+                } catch (Exception ex) {
+                    System.out.println(this.getClass() + ": " + ex.getMessage());
+                }
+            }
+        }
     }
 }

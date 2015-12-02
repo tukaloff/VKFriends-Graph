@@ -12,7 +12,7 @@ import org.w3c.dom.NodeList;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 class VK_XMLParser {
     

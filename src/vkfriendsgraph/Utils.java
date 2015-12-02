@@ -9,9 +9,11 @@ import java.awt.Dimension;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class Utils {
+    
+    public static final double F = (1 + Math.sqrt(5))/ 2;
     
     public static Dimension resetDimension(Dimension dim, int perc) {
         double width = dim.getWidth();

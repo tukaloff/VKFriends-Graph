@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public interface VKObject {
     

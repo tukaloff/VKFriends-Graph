@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class Friends implements VKObject{
     
@@ -40,9 +40,6 @@ public class Friends implements VKObject{
      */
     public Friends(int userId, int count) {
         isError = false;
-        if (userId == 172) {
-            System.out.println("There");
-        }
         this.userId = userId;
         this.count = count;
         prepairParams();

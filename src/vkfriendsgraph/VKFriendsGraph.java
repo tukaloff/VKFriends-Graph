@@ -13,7 +13,7 @@ import static vkfriendsgraph.Utils.resetDimension;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class VKFriendsGraph {
 

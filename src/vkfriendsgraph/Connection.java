@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,7 +24,7 @@ import org.xml.sax.SAXException;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class Connection {
     

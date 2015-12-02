@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class Graph implements Serializable {
     

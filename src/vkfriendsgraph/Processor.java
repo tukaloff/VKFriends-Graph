@@ -15,15 +15,18 @@ import java.util.ArrayList;
 
 /**
  *
- * @author user
+ * @author tukaloff
  */
 public class Processor {
     
     private int userId;
     private int iterations;
     private int friendsCount;
-    Graph graph;
     private int totalCount = 1;
+    private String filePath;
+    
+    private Graph graph;
+    private boolean isFinished;
     
     public Processor(int userId, int iterations, int friendsCount) {
         this.userId = userId;
@@ -31,15 +34,18 @@ public class Processor {
         this.friendsCount = friendsCount;
         graph = new Graph();
     }
+
+    public Processor(String filePath) {
+        this.filePath = filePath;
+    }
     
     /**
      * Стартер процессора
-     * @param userId - ID пользователя,
-     * с которого начинается построение графа
      */
-    public void start(int userId) {
+    public void start() {
         int[] path = new int[0];
         process(userId, path);
+        isFinished = true;
         saveGraph();
     }
     
@@ -54,17 +60,19 @@ public class Processor {
             oos.flush();
             oos.close();
         } catch (FileNotFoundException ex) {
-            //Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         } catch (IOException ex) {
-            //Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex.getMessage());
         }
     }
     
     public void readFromFile() {
         try {
-            FileInputStream fis = new FileInputStream("Graph.vkg");
+            FileInputStream fis = new FileInputStream(filePath);
             ObjectInputStream ois = new ObjectInputStream(fis);
             graph = (Graph) ois.readObject();
+            ois.close();
+            isFinished = true;
         } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
@@ -130,9 +138,6 @@ public class Processor {
         }
         ArrayList<User> aFriends = friends.getArrayOfUsers();
         if (path.length == iterations) {
-            if (userId == 172) {
-                System.out.println("There");
-            }
             int[] newPath = new int[path.length + 1];
             System.arraycopy(path, 0, newPath, 0, path.length);
             newPath[newPath.length - 1] = userId;
@@ -200,5 +205,13 @@ public class Processor {
         } catch (InterruptedException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    boolean isFinished() {
+        return isFinished;
     }
 }
