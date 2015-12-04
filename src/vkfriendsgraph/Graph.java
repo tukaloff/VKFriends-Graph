@@ -30,11 +30,11 @@ public class Graph implements Serializable {
      * @return возвращает путь к пользователю. Может быть изменён, 
      * если пользователь уже был помещён ранее
      */
-    public int[] put(User user, int level, int[] path) {
+    public int[] put(User user, int level, int[] path) throws CloneNotSupportedException {
         ArrayList<Object[]> friendsList = getListByLevel(level, this.mainGraph, path);
         if (!checkIndex(user.getUserId(), level, path)){
             ArrayList<Object[]> newEmptyList = new ArrayList<>();
-            Object[] uObj = {user, newEmptyList};
+            Object[] uObj = {user.clone(), newEmptyList};
             friendsList.add(uObj);
             addIndex(user.getUserId(), level, path, null);
             showReads();
@@ -50,9 +50,6 @@ public class Graph implements Serializable {
                 for(int i = 0; i < reqFriendsList.size(); i++, reads++) {
                     if(((int)reqUser[0]) == ((User)reqFriendsList.get(i)[0]).getUserId()) {
                         friendsList.add(reqFriendsList.get(i));
-                        //ArrayList<Object[]> newEmptyList = new ArrayList<>();
-                        //Object[] uObj = {user, newEmptyList};
-                        //friendsList.add(uObj);
                         showReads();
                         return (int[])reqUser[2];
                     }

@@ -5,9 +5,14 @@
  */
 package vkfriendsgraph;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -21,7 +26,7 @@ import org.w3c.dom.Node;
  *
  * @author tukaloff
  */
-class User implements VKObject, Serializable {
+class User implements VKObject, Serializable, Cloneable {
     
     private int userId;
     private ArrayList<ArrayList<String>> params;
@@ -29,6 +34,7 @@ class User implements VKObject, Serializable {
     private String firstName;
     private String lastName;
     private String deactivated;
+    private ImageIcon photo50;
     
     /**
      * Конструктор Подготавливает параметры для GET-запроса к API,
@@ -71,8 +77,8 @@ class User implements VKObject, Serializable {
         try {
             parse(node, XML_PARENT_FRIEND);
         } catch (Exception ex) {
-            System.out.println("public User(Node node):" + xml);
-            System.out.println(ex.getMessage());
+            //System.out.println("public User(Node node):" + xml);
+            //System.out.println(ex.getMessage());
         }
         //saveXml();
     }
@@ -116,8 +122,23 @@ class User implements VKObject, Serializable {
         
         path = new String[] {"user", "nickname"};
         xmlParser = new VK_XMLParser(node, path);
+        try {
         if (xmlParser.getValue(0).equals("tworogue")) {
             System.out.println("tworogue");
+        }
+        } catch (Exception e) {
+            
+        }
+        
+        path = new String[] {"user", "photo_50"};
+        xmlParser = new VK_XMLParser(node, path);
+        try {
+            Image iphoto50 = Toolkit.getDefaultToolkit().getImage(new URL(xmlParser.getValue(0)));
+            iphoto50.flush();
+            photo50 = new ImageIcon(iphoto50);
+            System.out.println("Photo loaded");
+        } catch (MalformedURLException ex) {
+            System.out.println("Photo not loaded");
         }
     }
     
@@ -249,5 +270,14 @@ class User implements VKObject, Serializable {
 
     String getLastName() {
         return lastName;
+    }
+    
+    public Image getPhoto50() {
+        return photo50.getImage();
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

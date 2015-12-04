@@ -25,6 +25,8 @@ public class VKFriendsGraph {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension newDim = resetDimension(dim, 70);
         
+        Properties.loadProperties();
+        
         EventQueue.invokeLater(new Runnable() {
 
             @Override

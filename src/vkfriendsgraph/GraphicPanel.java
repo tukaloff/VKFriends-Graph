@@ -11,8 +11,11 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Paint;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.TexturePaint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -23,6 +26,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import javax.swing.BorderFactory;
@@ -42,7 +46,6 @@ public class GraphicPanel extends JPanel {
     
     double width, height;
     double growingCoef = 0.5;
-    double scale = 1;
     double radius;
     Processor processor;
     Graph graph;
@@ -50,10 +53,8 @@ public class GraphicPanel extends JPanel {
     double diffX = 0;
     double diffY = 0;
     
-    int fps = 50;
+    int fps = 20;
     
-    Point2D startPoint;
-
     GraphicPanel(Rectangle rect, Processor processor) {
         super();
         this.processor = processor;
@@ -75,15 +76,20 @@ public class GraphicPanel extends JPanel {
         height = this.getHeight();
         radius = height / 2;
         Graphics2D g2 = (Graphics2D) g;
+        
+        Properties.setWidth(width);
+        Properties.setHeight(height);
+        
         FontRenderContext context = g2.getFontRenderContext();
-        if (10 * (scale / 1.2) < 40)
-            g2.setFont(g2.getFont().deriveFont((float)(10 * (scale / 1.2))));
+        if (10 * (Properties.getScale() / 1.2) < 40)
+            g2.setFont(g2.getFont().deriveFont((float)(10 * (Properties.getScale() / 1.2))));
         else 
             g2.setFont(g2.getFont().deriveFont((float)(40)));
         Font font = g2.getFont();
 
         g2.setColor(Color.black);
         try {
+            Properties.setMensCount(arrayShapes.size());
             for(int i = 0; i < arrayShapes.size(); i++) {
                 Shape line = (Shape) (arrayShapes.get(i)[1]);
                 if ((boolean)arrayShapes.get(i)[6])
@@ -110,10 +116,18 @@ public class GraphicPanel extends JPanel {
                 
                 Color lastColor = g2.getColor();
                 
+                /*
                 g2.setPaint(new GradientPaint(new Point2D.Double(ellipse.getMinX(), ellipse.getMinY()), 
                         new Color(100, 150, 100), 
                         new Point2D.Double(ellipse.getMaxX(), ellipse.getMaxY()), 
-                        new Color(100, 150, 150)));
+                        new Color(100, 150, 150)));*/
+                Image img = (Image)((User)arrayShapes.get(i)[0]).getPhoto50();
+                BufferedImage bi = new BufferedImage(img.getWidth(this), img.getHeight(this), BufferedImage.TYPE_INT_ARGB);
+                Graphics2D bGr =  bi.createGraphics();
+                bGr.drawImage(img, 0, 0, null);
+                bGr.dispose();
+                g2.setPaint(
+                        new TexturePaint(bi, ellipse.getBounds()));
                 g2.fill(ellipse);
                 g2.setColor(lastColor);
                 g2.draw(ellipse);
@@ -133,7 +147,9 @@ public class GraphicPanel extends JPanel {
         width = this.getWidth();
         height = this.getHeight();
         radius = height / 2;
-        startPoint = new Point2D.Double(width / 2, height / 2);
+        if ((Properties.getCenterPoint().getX() == 200.0
+                && Properties.getCenterPoint().getY() == 200.0))
+            Properties.setCenterPoint(new Point2D.Double(width / 2, height / 2));
         new Thread(new GraphReader()).start();
     }
     
@@ -145,13 +161,13 @@ public class GraphicPanel extends JPanel {
             Object[] obj = {me, line, enterPoint, me.getName(), innerArray.get(0)[1], 0, false};
             //notRepeatUsers.add(obj);
             arrayShapes.add(obj);
-            prepairShapes((ArrayList<Object[]>)arrayGraph.get(0)[1], startPoint,
+            prepairShapes((ArrayList<Object[]>)arrayGraph.get(0)[1], Properties.getCenterPoint(),
                                     360, 360, radius, false);
             return;
         }
         parentAngle = normalizeAngle(parentAngle);
         containerAngle = normalizeAngle(containerAngle);
-        int friendsCount = 0;
+        int friendsCount;
         double angle;
         if (innerArray.size() == 0) {
             angle = 0;
@@ -266,8 +282,8 @@ public class GraphicPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent me) {
-                diffX = startPoint.getX() - me.getX();
-                diffY = startPoint.getY() - me.getY();
+                diffX = Properties.getCenterPoint().getX() - me.getX();
+                diffY = Properties.getCenterPoint().getY() - me.getY();
             }
 
             @Override
@@ -287,7 +303,7 @@ public class GraphicPanel extends JPanel {
             
             @Override
             public void mouseDragged(MouseEvent me) {
-                startPoint = new Point2D.Double(me.getX() + diffX, me.getY() + diffY);
+                Properties.setCenterPoint(new Point2D.Double(me.getX() + diffX, me.getY() + diffY));
             }
 
             @Override
@@ -299,18 +315,18 @@ public class GraphicPanel extends JPanel {
             public void mouseWheelMoved(MouseWheelEvent mwe) {
                 double x3;
                 double y3;
-                if (scale != 1 || scale != -1) {
+                if (Properties.getScale() != 1 || Properties.getScale() != -1) {
                     if (mwe.getWheelRotation() < 0) {//увеличение
-                        scale *= 1.2;
-                        x3 = mwe.getX() + (startPoint.getX() - mwe.getX()) * 1.2;
-                        y3 = mwe.getY() + (startPoint.getY() - mwe.getY()) * 1.2;
+                        Properties.setScale(Properties.getScale() * 1.2);
+                        x3 = mwe.getX() + (Properties.getCenterPoint().getX() - mwe.getX()) * 1.2;
+                        y3 = mwe.getY() + (Properties.getCenterPoint().getY() - mwe.getY()) * 1.2;
                     }
                     else {//уменьшение
-                        scale /= 1.2;
-                        x3 = (startPoint.getX() - mwe.getX()) / 1.2 + mwe.getX();
-                        y3 = (startPoint.getY() - mwe.getY()) / 1.2 + mwe.getY();
+                        Properties.setScale(Properties.getScale() / 1.2);
+                        x3 = (Properties.getCenterPoint().getX() - mwe.getX()) / 1.2 + mwe.getX();
+                        y3 = (Properties.getCenterPoint().getY() - mwe.getY()) / 1.2 + mwe.getY();
                     }
-                    startPoint = new Point2D.Double(x3, y3);
+                    Properties.setCenterPoint(new Point2D.Double(x3, y3));
                 }
             }
         }
@@ -353,13 +369,13 @@ public class GraphicPanel extends JPanel {
                     long msStart = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
                     arrayShapes.clear();
                     double radius = height / 2;
-                    radius *= scale;
+                    radius *= Properties.getScale();
                     growingCoef = growingCoef / 1.005;
                     if (arrayGraph.size() > 0 && height > 0) {
                         ArrayList<Object[]> innerArray = arrayGraph;
-                        if (processor.isFinished())
-                            prepairShapes(innerArray, startPoint,
-                                360, 360, radius, true);
+                    if (!processor.isFinished() || arrayGraph.size() > 0)
+                        prepairShapes(innerArray, Properties.getCenterPoint(),
+                            360, 360, radius, true);
                     }
                     repaint();
                     long msEnd = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
