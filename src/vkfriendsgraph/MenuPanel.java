@@ -5,7 +5,6 @@
  */
 package vkfriendsgraph;
 
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -18,8 +17,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.ViewportLayout;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 /**
  *
@@ -68,8 +65,23 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                System.out.println(this.getClass() + ": " + ae.getActionCommand());
-                Properties.setGraphStarted(true);
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        int USER_ID = 76141154;//88374578 18725186;// 85800109
+                        //int USER_ID = Integer.valueOf(1039324);//208);//88374578);//8308498);
+                        System.out.println(USER_ID);
+                        String[] path;
+                        path = new String[] {"response", "uid"};
+                        int tryConnect = 10;
+                        String filePath = "Graph.vkg";
+                        Properties.setProcessor(new Processor(USER_ID, 4));
+                        System.out.println("start");
+                        Properties.getProcessor().start();
+                        System.out.println("Properties.getProcessor().start();");
+                    }
+                }).start();
             }
         });
         this.add(btnStart);
@@ -80,7 +92,7 @@ public class MenuPanel extends JPanel{
         //lblNScale.set(0, 0, 20, this.getHeight() / 4 * 2);
         lblScale = new JLabel(Double.toString(scale));
         lblScale.setFont(lblScale.getFont().deriveFont(fontScale));
-        JPanel panelScale = new JPanel(new GridLayout(1, 2));//FlowLayout());
+        JPanel panelScale = new JPanel(new GridLayout(1, 2));
         panelScale.add(lblNScale);
         panelScale.add(lblScale);
         this.add(panelScale);
@@ -96,7 +108,7 @@ public class MenuPanel extends JPanel{
         
         lblDeep = new JLabel("Глубина графа: ");
         lblDeep.setFont(lblNMensCount.getFont().deriveFont(fontScale));
-        System.out.println(Properties.getGraphDeep());
+        //System.out.println(Properties.getGraphDeep());
         tfDeep = new JTextField(Integer.toString(Properties.getGraphDeep()));
         tfDeep.setFont(tfDeep.getFont().deriveFont(fontScale));
         tfDeep.addKeyListener(new KeyListener() {

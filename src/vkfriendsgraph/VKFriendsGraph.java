@@ -37,15 +37,6 @@ public class VKFriendsGraph {
                 frame.setVisible(true);
             }
         });
-        /*
-        System.out.println(new GregorianCalendar().toInstant());
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException ex) {
-            System.out.println(ex.getMessage());
-        }
-        System.out.println(new GregorianCalendar().toInstant());
-        */        
     }
     
 }

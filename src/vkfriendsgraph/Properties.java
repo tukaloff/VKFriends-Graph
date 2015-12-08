@@ -27,6 +27,10 @@ public class Properties implements Serializable {
     private static double width;
     private static double height;
     
+    private static double rotationAngle = 0;
+    
+    private static Processor processor;
+    
     private Properties() {
         pScale = scale;
         pMensCount = mensCount;
@@ -82,7 +86,7 @@ public class Properties implements Serializable {
     }
     
     public static double getWidth() {
-        return mensCount;
+        return width;
     }
     
     public static void setWidth(double width) {
@@ -90,7 +94,7 @@ public class Properties implements Serializable {
     }
     
     public static double getHeight() {
-        return mensCount;
+        return height;
     }
     
     public static void setHeight(double height) {
@@ -111,5 +115,21 @@ public class Properties implements Serializable {
     
     public static void setGraphStarted(boolean isGraphStarted) {
         Properties.isGraphStarted = isGraphStarted;
+    }
+    
+    public static Processor getProcessor() {
+        return Properties.processor;
+    }
+    
+    public static void setProcessor(Processor proc) {
+        Properties.processor = proc;
+    }
+    
+    public static double getRotationAngle() {
+        return rotationAngle;
+    }
+    
+    public static void getRotationAngle(double rotationAngle) {
+        Properties.rotationAngle = rotationAngle;
     }
 }

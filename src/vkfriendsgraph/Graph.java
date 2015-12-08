@@ -60,6 +60,10 @@ public class Graph implements Serializable {
         }
     }
     
+    public int getUsersCount() {
+        return index.size();
+    }
+    
     /**
      * Выводит количество чтений массивов (debug)
      */

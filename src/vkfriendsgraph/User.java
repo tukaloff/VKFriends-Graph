@@ -136,7 +136,6 @@ class User implements VKObject, Serializable, Cloneable {
             Image iphoto50 = Toolkit.getDefaultToolkit().getImage(new URL(xmlParser.getValue(0)));
             iphoto50.flush();
             photo50 = new ImageIcon(iphoto50);
-            System.out.println("Photo loaded");
         } catch (MalformedURLException ex) {
             System.out.println("Photo not loaded");
         }

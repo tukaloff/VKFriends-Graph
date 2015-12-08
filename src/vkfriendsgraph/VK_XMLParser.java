@@ -97,7 +97,7 @@ class VK_XMLParser {
      * @param xml XML-документ
      */
     public void failVK_XMLParser(Document xml) {
-        System.out.println(xml.getChildNodes().item(0).getChildNodes().item(0).getNodeValue());
+        //System.out.println(xml.getChildNodes().item(0).getChildNodes().item(0).getNodeValue());
         ArrayList<Object[]> parsingArray = new ArrayList<>();
         parsingArray.add(new Object[]{"root", xml.getChildNodes()});
         //parsingArray.add();
