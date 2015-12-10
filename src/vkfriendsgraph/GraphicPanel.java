@@ -5,25 +5,17 @@
  */
 package vkfriendsgraph;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.TexturePaint;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.FontRenderContext;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -31,7 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import vkfriendsgraph.Utils;
 
 /**
  *
@@ -98,6 +89,8 @@ public class GraphicPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.clearRect(0, 0, this.getWidth(), this.getHeight());
+        //this.setBackground(new java.awt.Color(0, 183, 74));//89, 125, 163));
         Properties.setWidth(this.getWidth());
         Properties.setHeight(this.getHeight());
         doubleBuffering((Graphics2D) g);
@@ -108,7 +101,12 @@ public class GraphicPanel extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent me) {
-
+            User user = Properties.getProcessor().findClickedUser(me.getX(), me.getY(), 10);
+            if (user == null) {
+                System.out.println("Не найдено");
+            }
+            else
+                System.out.println(user.getName());
         }
 
         @Override

@@ -14,6 +14,8 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,6 +36,7 @@ public class Connection {
     private Socket socket;
     private String sParams;
     private ArrayList<ArrayList<String>> params;
+    private String answer;
     
     /**
      * Конструктор создаёт объект подключения с передаваемыми параметрами
@@ -55,6 +58,35 @@ public class Connection {
             }
         }        
     }
+    
+    public Connection() {
+        try {
+            sQuery = "https://oauth.vk.com/authorize?"
+                    + "client_id=4772459&display=page&"
+                    + "redirect_uri=https://oauth.vk.com/blank.html&"
+                    + "scope=friends&response_type=token&v=5.40;";
+            URL uri = new URL(sQuery);
+            HttpsURLConnection https = (HttpsURLConnection) uri.openConnection();
+            //System.out.println(https.getURL().toString());
+            InputStream is = https.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String line = "";
+            answer = "";
+            while ((line = br.readLine()) != null) {
+                answer += line;
+        }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public String getAnswer() {
+        return answer;
+    }    
+    
     
     /**
      * Формирует из массива с параметрами строку с параметрами
@@ -96,7 +128,8 @@ public class Connection {
             InputStream is = https.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
-            String line = "", answer = "";
+            String line = "";
+            answer = "";
             while ((line = br.readLine()) != null) {
                 answer += line;
             }

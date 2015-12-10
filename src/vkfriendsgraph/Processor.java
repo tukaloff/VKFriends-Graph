@@ -10,11 +10,15 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,6 +38,8 @@ public class Processor {
     private boolean isWorking;
     private ArrayList<Object[]> arrayShapes = new ArrayList<>();
     private Image imgGraph;
+    
+    private boolean repaint;
     
     public Processor(int userId, int friendsCount) {
         this.userId = userId;
@@ -92,10 +98,14 @@ public class Processor {
         readGraph();
     }
     
+    /*
     private void paintImage() {
+        repaint = true;
         BufferedImage bi = new BufferedImage(Double.valueOf(Properties.getWidth()).intValue(), 
                 Double.valueOf(Properties.getHeight()).intValue(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) bi.getGraphics();
+        g.setColor(new java.awt.Color(0, 183, 74));//89, 125, 163));
+        g.fill(new Rectangle2D.Double(0, 0, bi.getWidth(), bi.getHeight()));
         for (int i = 0; i < arrayShapes.size(); i++) {
             Shape line = (Shape) (arrayShapes.get(i)[1]);
             if ((boolean)arrayShapes.get(i)[2])
@@ -113,6 +123,59 @@ public class Processor {
         bi.flush();
         imgGraph = bi;//.getScaledInstance(bi.getWidth(), bi.getHeight(), Image.SCALE_DEFAULT);
         imgGraph.flush();
+        repaint = false;
+    }
+    */
+    
+    private void paintImage() {
+        repaint = true;
+        
+        BufferedImage bi = new BufferedImage(Double.valueOf(Properties.getWidth()).intValue(), 
+                Double.valueOf(Properties.getHeight()).intValue(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) bi.getGraphics();
+        g.setColor(new java.awt.Color(0, 183, 74));//89, 125, 163));
+        g.fill(new Rectangle2D.Double(0, 0, bi.getWidth(), bi.getHeight()));
+        
+        g.drawImage(paintLinesLayer(), 0, 0, null);
+        g.drawImage(paintUsersLayer(), 0, 0, null);
+        
+        bi.flush();
+        imgGraph = bi;
+        imgGraph.flush();
+        
+        repaint = false;
+    }
+    
+    private BufferedImage paintLinesLayer() {
+        BufferedImage bi = new BufferedImage(Double.valueOf(Properties.getWidth()).intValue(), 
+                Double.valueOf(Properties.getHeight()).intValue(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) bi.getGraphics();
+        g.setColor(Color.BLACK);
+        for (int i = 0; i < arrayShapes.size(); i++) {
+            Shape line = (Shape) (arrayShapes.get(i)[1]);
+            if ((boolean)arrayShapes.get(i)[2])
+                g.setColor(Color.blue);
+            else
+                g.setColor(Color.black);
+            g.setStroke(new BasicStroke((float) 1.3));
+            g.draw(line);
+            g.setColor(Color.black);
+        }
+        bi.flush();
+        return bi;
+    }
+    
+    private BufferedImage paintUsersLayer() {
+        BufferedImage bi = new BufferedImage(Double.valueOf(Properties.getWidth()).intValue(), 
+                Double.valueOf(Properties.getHeight()).intValue(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = (Graphics2D) bi.getGraphics();
+        g.setColor(Color.BLACK);
+        for (int i = 0; i < arrayShapes.size(); i++) {
+            UserPainter userPainter = (UserPainter) (arrayShapes.get(i)[0]);
+            userPainter.paint(g);
+        }
+        bi.flush();
+        return bi;
     }
     
     public Image getImage() {
@@ -210,6 +273,31 @@ public class Processor {
     boolean isWorking() {
         return isWorking;
     }
+
+    public User findClickedUser(int x, int y, int wait) {
+        User user = null;
+        int k = 0;
+        for (int i = 0; i < arrayShapes.size(); i++) {
+            Ellipse2D ell = ((UserPainter)arrayShapes.get(i)[0]).getEllipse();
+            try {
+                if (ell.contains(new Point2D.Double(x, y)))
+                    return ((UserPainter)arrayShapes.get(i)[0]).getUser();
+            } catch (Exception e) {
+                if (k++ < wait) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else {
+                    return null;
+                }
+                i = 0;
+            }
+        }
+        return user;
+    }
     
     private class GraphReader implements Runnable {
 
@@ -223,6 +311,7 @@ public class Processor {
                         double radius = Properties.getHeight() / 2;
                         radius *= Properties.getScale();
                         ArrayList<Object[]> innerArray = graph.getArrayGraph();
+                        Thread.sleep(10);
                         arrayShapes.clear();
                         prepairShapes(innerArray, Properties.getCenterPoint(),
                             360, 360, radius, true);

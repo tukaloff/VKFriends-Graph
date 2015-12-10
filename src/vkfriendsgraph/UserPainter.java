@@ -27,6 +27,7 @@ public class UserPainter {
     private String lastName;
     private Image photo50;
     private User user;
+    private Ellipse2D ellipse;
     
     public UserPainter(Point2D centerPoint, User user) {
         this.centerPoint = centerPoint;
@@ -44,6 +45,10 @@ public class UserPainter {
         return centerPoint;
     }
     
+    public Ellipse2D getEllipse() {
+        return ellipse;
+    }
+    
     public void paint(Graphics2D g) {
         FontRenderContext context = g.getFontRenderContext();
         if (10 * (Properties.getScale() / 1.2) < 40)
@@ -56,7 +61,7 @@ public class UserPainter {
         double fullWidth = (fNameRect.getWidth() > lNameRect.getWidth() ? fNameRect.getWidth() : lNameRect.getWidth());
         double fullHeight = fNameRect.getHeight() + lNameRect.getHeight();
 
-        Ellipse2D ellipse = new Ellipse2D.Double(centerPoint.getX() - (fullWidth > fullHeight ? fullWidth / 2 : fullHeight / 2), 
+        ellipse = new Ellipse2D.Double(centerPoint.getX() - (fullWidth > fullHeight ? fullWidth / 2 : fullHeight / 2), 
                 centerPoint.getY() - (fullWidth > fullHeight ? fullWidth / 2 : fullHeight / 2), 
                 (fullWidth > fullHeight ? fullWidth : fullHeight), (fullWidth > fullHeight ? fullWidth : fullHeight));
 
