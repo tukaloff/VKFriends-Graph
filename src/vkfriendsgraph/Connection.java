@@ -121,7 +121,8 @@ public class Connection {
     private boolean tryHTTPS_GET (String methodName, String answerType, long USER_ID) {
         try {
             //Генерируем строку запроса
-            sQuery = "https://api.vk.com/method/" + methodName + answerType + "?" + sParams;
+            sQuery = "https://api.vk.com/method/" + methodName + answerType + "?" + sParams 
+                    + "&access_token=" + Properties.getAccessToken();
             URL uri = new URL(sQuery);
             HttpsURLConnection https = (HttpsURLConnection) uri.openConnection();
             //System.out.println(https.getURL().toString());

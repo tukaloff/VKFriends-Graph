@@ -5,6 +5,7 @@
  */
 package vkfriendsgraph;
 
+import vkfriendsgraph.graph.Processor;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 
@@ -15,6 +16,8 @@ import java.io.Serializable;
 public class Properties implements Serializable {
     
     private static double scale = 1;
+    private static int userId;
+    private int pUserId;
     double pScale = 1;
     private static int mensCount;
     int pMensCount;
@@ -31,11 +34,16 @@ public class Properties implements Serializable {
     
     private static Processor processor;
     
+    private static String accessToken;
+    private String pAccessToken;
+    
     private Properties() {
         pScale = scale;
         pMensCount = mensCount;
         pCenterPoint = centerPoint;
         pGraphDeep = graphDeep;
+        pAccessToken = accessToken;
+        pUserId = userId;
     }
     
     public static void setDefault() {
@@ -54,6 +62,8 @@ public class Properties implements Serializable {
             scale = prop.pScale;
             centerPoint = prop.pCenterPoint;
             graphDeep = prop.pGraphDeep;
+            accessToken = prop.pAccessToken;
+            userId = prop.pUserId;
             System.out.println(Properties.class.getName() + ": Loaded");
         } catch (Exception e) {
             System.out.println(Properties.class.getName() + ": " 
@@ -131,5 +141,21 @@ public class Properties implements Serializable {
     
     public static void getRotationAngle(double rotationAngle) {
         Properties.rotationAngle = rotationAngle;
+    }
+    
+    public static void setAccesToken(String accessToken) {
+        Properties.accessToken = accessToken;
+    }
+    
+    public static String getAccessToken() {
+        return accessToken;
+    }
+    
+    public static void setMyID(int userId) {
+        Properties.userId = userId;
+    }
+    
+    public static int getMyID() {
+        return userId;
     }
 }

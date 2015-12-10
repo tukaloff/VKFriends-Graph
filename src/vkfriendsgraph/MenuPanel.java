@@ -5,6 +5,7 @@
  */
 package vkfriendsgraph;
 
+import vkfriendsgraph.graph.Processor;
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -13,10 +14,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -36,7 +42,8 @@ public class MenuPanel extends JPanel{
     private JTextField tfDeep;
     
     public MenuPanel(LayoutManager layout) {
-        super(layout);
+        //super(layout);
+        super();
         isRunning = true;
         initComponents();
         runPropertiesUpdater();
@@ -48,6 +55,12 @@ public class MenuPanel extends JPanel{
     }
 
     private void initComponents() {
+        
+        JPanel me = new JPanel();
+        User uMe = new User(Properties.getMyID());
+        me.add(new JLabel(uMe.getName(), new ImageIcon(uMe.getPhoto50()), JLabel.LEFT));
+        me.setSize(this.getWidth(), 100);
+        this.add(me);
         
         JButton btnDefaults = new JButton("По умолчанию");
         btnDefaults.addActionListener(new ActionListener() {
@@ -69,14 +82,11 @@ public class MenuPanel extends JPanel{
 
                     @Override
                     public void run() {
-                        int USER_ID = 76141154;//88374578 18725186;// 85800109
-                        //int USER_ID = Integer.valueOf(1039324);//208);//88374578);//8308498);
-                        System.out.println(USER_ID);
                         String[] path;
                         path = new String[] {"response", "uid"};
                         int tryConnect = 10;
                         String filePath = "Graph.vkg";
-                        Properties.setProcessor(new Processor(USER_ID, 4));
+                        Properties.setProcessor(new Processor(Properties.getMyID(), 4));
                         System.out.println("start");
                         Properties.getProcessor().start();
                         System.out.println("Properties.getProcessor().start();");
@@ -101,7 +111,7 @@ public class MenuPanel extends JPanel{
         lblNMensCount.setFont(lblNMensCount.getFont().deriveFont(fontScale));
         lblMensCount = new JLabel(Integer.toString(mensCount));
         lblMensCount.setFont(lblMensCount.getFont().deriveFont(fontScale));
-        JPanel panelMensCount = new JPanel(new GridLayout(1, 2));
+        JPanel panelMensCount = new JPanel(new GridLayout(1, 2));        
         panelMensCount.add(lblNMensCount);
         panelMensCount.add(lblMensCount);
         this.add(panelMensCount);
@@ -109,6 +119,23 @@ public class MenuPanel extends JPanel{
         lblDeep = new JLabel("Глубина графа: ");
         lblDeep.setFont(lblNMensCount.getFont().deriveFont(fontScale));
         //System.out.println(Properties.getGraphDeep());
+        
+        JSlider slider = new JSlider(1, 20);
+        slider.setValue(Properties.getGraphDeep());
+        slider.setMajorTickSpacing(1);
+        slider.setMinorTickSpacing(1);
+        slider.setPaintTicks(true);
+        slider.setPaintLabels(true);
+        slider.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent ce) {
+                int value = slider.getValue();
+                System.out.println(value);
+                Properties.setGraphDeep(value);
+            }
+        });
+        
         tfDeep = new JTextField(Integer.toString(Properties.getGraphDeep()));
         tfDeep.setFont(tfDeep.getFont().deriveFont(fontScale));
         tfDeep.addKeyListener(new KeyListener() {
@@ -133,10 +160,28 @@ public class MenuPanel extends JPanel{
                 
             }
         });
+        
+        JPanel thiss = this;
+        
+        JButton buttonForgetToken = new JButton("Выйти");
+        buttonForgetToken.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                System.out.println("forgot");
+                Properties.setAccesToken(null);
+                me.removeAll();
+                thiss.remove(me);
+            }
+        });
+        
         JPanel panelDeep = new JPanel(new GridLayout(1, 2));
         panelDeep.add(lblDeep);
-        panelDeep.add(tfDeep);
+        //panelDeep.add(tfDeep);
+        
         this.add(panelDeep);
+        this.add(slider);
+        this.add(buttonForgetToken);
         
         
     }

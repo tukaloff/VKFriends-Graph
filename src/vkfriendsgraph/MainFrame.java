@@ -5,6 +5,7 @@
  */
 package vkfriendsgraph;
 
+import vkfriendsgraph.graph.Processor;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -52,7 +53,7 @@ public class MainFrame extends JFrame {
         panel.setVisible(true);
         
         JPanel rootPanel = new JPanel(new BorderLayout());
-        MenuPanel menuPanel = new MenuPanel(new GridLayout(20, 1));//new JPanel(new FlowLayout());
+        MenuPanel menuPanel = new MenuPanel(new GridLayout(16, 1));//new JPanel(new FlowLayout());
         menuPanel.setPreferredSize(new Dimension(300, 600));
         menuPanel.setBounds(new Rectangle(new Dimension(300, 600)));
         menuPanel.setBackground(new java.awt.Color(0, 119, 48));//89, 125, 163));

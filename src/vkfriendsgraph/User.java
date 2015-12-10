@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
  *
  * @author tukaloff
  */
-class User implements VKObject, Serializable, Cloneable {
+public class User implements VKObject, Serializable, Cloneable {
     
     private int userId;
     private ArrayList<ArrayList<String>> params;
@@ -251,7 +251,7 @@ class User implements VKObject, Serializable, Cloneable {
      * Возвращает ID пользователя
      * @return UserID
      */
-    int getUserId() {
+    public int getUserId() {
         return userId;
     }
     
@@ -263,11 +263,11 @@ class User implements VKObject, Serializable, Cloneable {
         return deactivated;
     }
 
-    String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    String getLastName() {
+    public String getLastName() {
         return lastName;
     }
     
