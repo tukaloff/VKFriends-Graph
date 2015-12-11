@@ -10,17 +10,13 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -39,7 +35,6 @@ public class MenuPanel extends JPanel{
     private JLabel lblNMensCount;
     private JLabel lblMensCount;
     private JLabel lblDeep;
-    private JTextField tfDeep;
     
     public MenuPanel(LayoutManager layout) {
         //super(layout);
@@ -86,7 +81,8 @@ public class MenuPanel extends JPanel{
                         path = new String[] {"response", "uid"};
                         int tryConnect = 10;
                         String filePath = "Graph.vkg";
-                        Properties.setProcessor(new Processor(Properties.getMyID(), 4));
+                        Properties.setProcessor(new Processor(Properties.getMyID(), 
+                                Properties.getFriendsCount()));
                         System.out.println("start");
                         Properties.getProcessor().start();
                         System.out.println("Properties.getProcessor().start();");
@@ -118,46 +114,36 @@ public class MenuPanel extends JPanel{
         
         lblDeep = new JLabel("Глубина графа: ");
         lblDeep.setFont(lblNMensCount.getFont().deriveFont(fontScale));
-        //System.out.println(Properties.getGraphDeep());
         
-        JSlider slider = new JSlider(1, 20);
-        slider.setValue(Properties.getGraphDeep());
-        slider.setMajorTickSpacing(1);
-        slider.setMinorTickSpacing(1);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        slider.addChangeListener(new ChangeListener() {
+        JSlider depthSlider = new JSlider(1, 20);
+        depthSlider.setValue(Properties.getGraphDeep());
+        depthSlider.setMajorTickSpacing(1);
+        depthSlider.setMinorTickSpacing(1);
+        depthSlider.setPaintTicks(true);
+        depthSlider.setPaintLabels(true);
+        depthSlider.addChangeListener(new ChangeListener() {
 
             @Override
             public void stateChanged(ChangeEvent ce) {
-                int value = slider.getValue();
+                int value = depthSlider.getValue();
                 System.out.println(value);
                 Properties.setGraphDeep(value);
             }
         });
         
-        tfDeep = new JTextField(Integer.toString(Properties.getGraphDeep()));
-        tfDeep.setFont(tfDeep.getFont().deriveFont(fontScale));
-        tfDeep.addKeyListener(new KeyListener() {
+        JSlider friendsSlider = new JSlider(1, uMe.getFriendsCount());
+        friendsSlider.setValue(Properties.getFriendsCount());
+        friendsSlider.setMajorTickSpacing(40);
+        friendsSlider.setMinorTickSpacing(1);
+        friendsSlider.setPaintTicks(true);
+        friendsSlider.setPaintLabels(true);
+        friendsSlider.addChangeListener(new ChangeListener() {
 
             @Override
-            public void keyTyped(KeyEvent ke) {
-                if (ke.getKeyChar() == '\n')
-                    try {
-                        Properties.setGraphDeep(Double.valueOf(tfDeep.getText()).intValue());
-                    } catch (Exception e) {
-                        tfDeep.setText("");
-                    }
-            }
-
-            @Override
-            public void keyPressed(KeyEvent ke) {
-                
-            }
-
-            @Override
-            public void keyReleased(KeyEvent ke) {
-                
+            public void stateChanged(ChangeEvent ce) {
+                int value = friendsSlider.getValue();
+                System.out.println(value);
+                Properties.setFriendsCount(value);
             }
         });
         
@@ -177,13 +163,11 @@ public class MenuPanel extends JPanel{
         
         JPanel panelDeep = new JPanel(new GridLayout(1, 2));
         panelDeep.add(lblDeep);
-        //panelDeep.add(tfDeep);
-        
         this.add(panelDeep);
-        this.add(slider);
+        this.add(depthSlider);
         this.add(buttonForgetToken);
-        
-        
+        this.add(new JLabel("Количество друзей"));
+        this.add(friendsSlider);
     }
     
     private class PropertiesListener implements Runnable {

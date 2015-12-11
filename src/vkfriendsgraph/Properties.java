@@ -36,6 +36,8 @@ public class Properties implements Serializable {
     
     private static String accessToken;
     private String pAccessToken;
+    private static int friendsCount;
+    private int pFriendsCount;
     
     private Properties() {
         pScale = scale;
@@ -44,6 +46,7 @@ public class Properties implements Serializable {
         pGraphDeep = graphDeep;
         pAccessToken = accessToken;
         pUserId = userId;
+        pFriendsCount = friendsCount;
     }
     
     public static void setDefault() {
@@ -64,6 +67,7 @@ public class Properties implements Serializable {
             graphDeep = prop.pGraphDeep;
             accessToken = prop.pAccessToken;
             userId = prop.pUserId;
+            friendsCount = prop.pFriendsCount;
             System.out.println(Properties.class.getName() + ": Loaded");
         } catch (Exception e) {
             System.out.println(Properties.class.getName() + ": " 
@@ -157,5 +161,13 @@ public class Properties implements Serializable {
     
     public static int getMyID() {
         return userId;
+    }
+    
+    public static void setFriendsCount(int friendsCount) {
+        Properties.friendsCount = friendsCount;
+    }
+    
+    public static int getFriendsCount() {
+        return friendsCount;
     }
 }

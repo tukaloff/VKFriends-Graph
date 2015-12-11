@@ -35,6 +35,7 @@ public class User implements VKObject, Serializable, Cloneable {
     private String lastName;
     private String deactivated;
     private ImageIcon photo50;
+    private int friendsCount;
     
     /**
      * Конструктор Подготавливает параметры для GET-запроса к API,
@@ -139,6 +140,11 @@ public class User implements VKObject, Serializable, Cloneable {
         } catch (MalformedURLException ex) {
             System.out.println("Photo not loaded");
         }
+        
+        path = new String[] {"user", "counters", "friends"};
+        xmlParser = new VK_XMLParser(node, path);
+        friendsCount = Integer.valueOf(xmlParser.getValue(0));
+        
     }
     
     /**
@@ -278,5 +284,9 @@ public class User implements VKObject, Serializable, Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public int getFriendsCount() {
+        return friendsCount;
     }
 }
