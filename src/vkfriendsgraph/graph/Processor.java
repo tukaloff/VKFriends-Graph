@@ -98,6 +98,11 @@ public class Processor {
     public void readFromFile() {
         isWorking = true;
         graph = (Graph) Utils.readFile(filePath);
+        try {
+        Properties.setFriendsCount(graph.getUsersCount());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         isWorking = false;
         isFinished = true;
         readGraph();
@@ -209,8 +214,9 @@ public class Processor {
                         graph.put(aFriends.get(i), newPath.length, newPath);
                         continue;
                     }
-                User friend = new User(aFriends.get(i).getUserId());
-                graph.put(friend, newPath.length, newPath);
+                /*User friend = new User(aFriends.get(i).getUserId());
+                graph.put(friend, newPath.length, newPath);*/
+                graph.put(aFriends.get(i), newPath.length, newPath);
             }
             return;
         }
@@ -261,7 +267,7 @@ public class Processor {
      */
     private void waitRequest() {
         try {
-            Thread.sleep(200);
+            Thread.sleep(80);
         } catch (InterruptedException ex) {
             System.out.println(ex.getMessage());
         }
@@ -308,27 +314,33 @@ public class Processor {
 
         @Override
         public void run() {
-            int lastSize = graph.getUsersCount();
-            while(/*!isFinished*/true) {
-                //if (lastSize != graph.getUsersCount()) {
-                    try {
-                        long msStart = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
-                        double radius = Properties.getHeight() / 2;
-                        radius *= Properties.getScale();
-                        ArrayList<Object[]> innerArray = graph.getArrayGraph();
-                        Thread.sleep(10);
-                        arrayShapes.clear();
-                        prepairShapes(innerArray, Properties.getCenterPoint(),
-                            360, 360, radius, true);
-                        paintImage();
-                        long msEnd = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
-                        int diff = (int)((msEnd - msStart) < 0 ? 0 : (msEnd - msStart));
-                    } catch (Exception ex) {
-                        System.out.println(this.getClass() + ": " + ex.getMessage());
-                    }
-                    lastSize = graph.getUsersCount();
-                //}
+            
+            try {
+                int lastSize = graph.getUsersCount();
+                while(/*!isFinished*/true) {
+                    //if (lastSize != graph.getUsersCount()) {
+                        try {
+                            long msStart = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
+                            double radius = Properties.getHeight() / 2;
+                            radius *= Properties.getScale();
+                            ArrayList<Object[]> innerArray = graph.getArrayGraph();
+                            Thread.sleep(10);
+                            arrayShapes.clear();
+                            prepairShapes(innerArray, Properties.getCenterPoint(),
+                                360, 360, radius, true);
+                            paintImage();
+                            long msEnd = new GregorianCalendar().get(GregorianCalendar.MILLISECOND);
+                            int diff = (int)((msEnd - msStart) < 0 ? 0 : (msEnd - msStart));
+                        } catch (Exception ex) {
+                            //System.out.println(this.getClass() + ": " + ex.getMessage());
+                        }
+                        lastSize = graph.getUsersCount();
+                    //}
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
+            
         }
     }
     

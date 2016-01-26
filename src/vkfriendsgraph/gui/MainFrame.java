@@ -3,17 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vkfriendsgraph;
+package vkfriendsgraph.gui;
 
 import vkfriendsgraph.graph.Processor;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import vkfriendsgraph.Properties;
 import static vkfriendsgraph.Utils.resetDimension;
 
 /**
@@ -53,7 +54,9 @@ public class MainFrame extends JFrame {
         panel.setVisible(true);
         
         JPanel rootPanel = new JPanel(new BorderLayout());
-        MenuPanel menuPanel = new MenuPanel(new GridLayout(16, 1));//new JPanel(new FlowLayout());
+        
+        //MenuPanel menuPanel = new MenuPanel(new GridLayout(16, 1));//new JPanel(new FlowLayout());
+        MenuPanel menuPanel = new MenuPanel(new GridBagLayout());
         menuPanel.setPreferredSize(new Dimension(300, 600));
         menuPanel.setBounds(new Rectangle(new Dimension(300, 600)));
         menuPanel.setBackground(new java.awt.Color(0, 119, 48));//89, 125, 163));

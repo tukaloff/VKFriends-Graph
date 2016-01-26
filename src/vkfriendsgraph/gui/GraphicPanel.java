@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vkfriendsgraph;
+package vkfriendsgraph.gui;
 
 import vkfriendsgraph.graph.Graph;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -18,12 +19,17 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import vkfriendsgraph.Properties;
+import vkfriendsgraph.User;
 
 /**
  *
@@ -106,8 +112,16 @@ public class GraphicPanel extends JPanel {
             if (user == null) {
                 System.out.println("Не найдено");
             }
-            else
+            else {
                 System.out.println(user.getName());
+                try {
+                    Desktop.getDesktop().browse(new URI("https://vk.com/id" + user.getUserId()));
+                } catch (IOException ex) {
+                    Logger.getLogger(GraphicPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (URISyntaxException ex) {
+                    Logger.getLogger(GraphicPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
 
         @Override

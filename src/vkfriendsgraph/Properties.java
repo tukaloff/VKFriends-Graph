@@ -52,6 +52,8 @@ public class Properties implements Serializable {
     public static void setDefault() {
         scale = 1;
         centerPoint = new Point2D.Double(width / 2, height / 2);
+        friendsCount = 5;
+        graphDeep = 4;
     }
     
     public static void saveProperties() {
@@ -67,7 +69,8 @@ public class Properties implements Serializable {
             graphDeep = prop.pGraphDeep;
             accessToken = prop.pAccessToken;
             userId = prop.pUserId;
-            friendsCount = prop.pFriendsCount;
+            friendsCount = prop.pFriendsCount == 0 ? 
+                    processor.getGraph().getUsersCount() : prop.pFriendsCount;
             System.out.println(Properties.class.getName() + ": Loaded");
         } catch (Exception e) {
             System.out.println(Properties.class.getName() + ": " 
@@ -136,6 +139,7 @@ public class Properties implements Serializable {
     }
     
     public static void setProcessor(Processor proc) {
+        Properties.processor = null;
         Properties.processor = proc;
     }
     

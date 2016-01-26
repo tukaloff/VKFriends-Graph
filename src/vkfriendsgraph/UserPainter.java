@@ -76,9 +76,23 @@ public class UserPainter {
         g.setColor(lastColor);
         g.draw(ellipse);
 
+
+        
+        lastColor = g.getColor();
+        g.setColor(Color.BLACK);
+        g.drawString(firstName, (float)(centerPoint.getX() - fNameRect.getWidth() / 2) + 2, 
+                (float)(centerPoint.getY() - fullHeight / 2 - fNameRect.getY()) + 2);
+        g.drawString(lastName, (float)(centerPoint.getX() - lNameRect.getWidth() / 2) + 2, 
+                (float)(centerPoint.getY() + fullHeight / 2 - lNameRect.getHeight() - lNameRect.getY()) + 2);
+        g.setColor(lastColor);
+        
+        
+        lastColor = g.getColor();
+        g.setColor(new Color(0, 50, 0));
         g.drawString(firstName, (float)(centerPoint.getX() - fNameRect.getWidth() / 2), 
                 (float)(centerPoint.getY() - fullHeight / 2 - fNameRect.getY()));
         g.drawString(lastName, (float)(centerPoint.getX() - lNameRect.getWidth() / 2), 
                 (float)(centerPoint.getY() + fullHeight / 2 - lNameRect.getHeight() - lNameRect.getY()));
+        g.setColor(lastColor);
     }
 }

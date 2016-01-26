@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vkfriendsgraph;
+package vkfriendsgraph.gui;
 
 import vkfriendsgraph.graph.Processor;
 import java.awt.GridLayout;
@@ -19,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import vkfriendsgraph.Properties;
+import vkfriendsgraph.User;
 
 /**
  *
@@ -35,6 +37,8 @@ public class MenuPanel extends JPanel{
     private JLabel lblNMensCount;
     private JLabel lblMensCount;
     private JLabel lblDeep;
+    private JSlider depthSlider;
+    JSlider friendsSlider;
     
     public MenuPanel(LayoutManager layout) {
         //super(layout);
@@ -52,10 +56,10 @@ public class MenuPanel extends JPanel{
     private void initComponents() {
         
         JPanel me = new JPanel();
-        User uMe = new User(Properties.getMyID());
-        me.add(new JLabel(uMe.getName(), new ImageIcon(uMe.getPhoto50()), JLabel.LEFT));
+        //User uMe = new User(Properties.getMyID());
+        //me.add(new JLabel(uMe.getName(), new ImageIcon(uMe.getPhoto50()), JLabel.LEFT));
         me.setSize(this.getWidth(), 100);
-        this.add(me);
+        
         
         JButton btnDefaults = new JButton("По умолчанию");
         btnDefaults.addActionListener(new ActionListener() {
@@ -66,7 +70,7 @@ public class MenuPanel extends JPanel{
                 Properties.setDefault();
             }
         });
-        this.add(btnDefaults);
+        
         
         JButton btnStart = new JButton("Старт");
         btnStart.addActionListener(new ActionListener() {
@@ -90,32 +94,25 @@ public class MenuPanel extends JPanel{
                 }).start();
             }
         });
-        this.add(btnStart);
+        
         
         float fontScale = 14;
         lblNScale = new JLabel("Масштаб: ");
         lblNScale.setFont(lblNScale.getFont().deriveFont(fontScale));
-        //lblNScale.set(0, 0, 20, this.getHeight() / 4 * 2);
         lblScale = new JLabel(Double.toString(scale));
         lblScale.setFont(lblScale.getFont().deriveFont(fontScale));
-        JPanel panelScale = new JPanel(new GridLayout(1, 2));
-        panelScale.add(lblNScale);
-        panelScale.add(lblScale);
-        this.add(panelScale);
+
+        
         
         lblNMensCount = new JLabel("Количество пользователей: ");
         lblNMensCount.setFont(lblNMensCount.getFont().deriveFont(fontScale));
         lblMensCount = new JLabel(Integer.toString(mensCount));
-        lblMensCount.setFont(lblMensCount.getFont().deriveFont(fontScale));
-        JPanel panelMensCount = new JPanel(new GridLayout(1, 2));        
-        panelMensCount.add(lblNMensCount);
-        panelMensCount.add(lblMensCount);
-        this.add(panelMensCount);
+        lblMensCount.setFont(lblMensCount.getFont().deriveFont(fontScale));        
         
         lblDeep = new JLabel("Глубина графа: ");
         lblDeep.setFont(lblNMensCount.getFont().deriveFont(fontScale));
         
-        JSlider depthSlider = new JSlider(1, 20);
+        depthSlider = new JSlider(1, 20);
         depthSlider.setValue(Properties.getGraphDeep());
         depthSlider.setMajorTickSpacing(1);
         depthSlider.setMinorTickSpacing(1);
@@ -131,7 +128,7 @@ public class MenuPanel extends JPanel{
             }
         });
         
-        JSlider friendsSlider = new JSlider(1, uMe.getFriendsCount());
+        friendsSlider = new JSlider(1, 50);//uMe.getFriendsCount());
         friendsSlider.setValue(Properties.getFriendsCount());
         friendsSlider.setMajorTickSpacing(40);
         friendsSlider.setMinorTickSpacing(1);
@@ -163,9 +160,19 @@ public class MenuPanel extends JPanel{
         
         JPanel panelDeep = new JPanel(new GridLayout(1, 2));
         panelDeep.add(lblDeep);
-        this.add(panelDeep);
-        this.add(depthSlider);
+        this.add(me);
         this.add(buttonForgetToken);
+        this.add(btnDefaults);
+        this.add(btnStart);
+        //this.add(panelScale);
+        this.add(lblNScale);
+        this.add(lblScale);
+        //this.add(panelMensCount);
+        this.add(lblNMensCount);
+        this.add(lblMensCount);
+        this.add(lblDeep);
+        //this.add(panelDeep);
+        this.add(depthSlider);
         this.add(new JLabel("Количество друзей"));
         this.add(friendsSlider);
     }
@@ -182,6 +189,9 @@ public class MenuPanel extends JPanel{
                 }
                 checkScaleChanged();
                 checkMensCount();
+                checkDeep();
+                checkFriendsCount();
+                repaint();
             }
         }
         
@@ -198,6 +208,18 @@ public class MenuPanel extends JPanel{
         if (Properties.getMensCount() != mensCount) {
             mensCount = Properties.getMensCount();
             lblMensCount.setText(Integer.toString(mensCount));
+        }
+    }
+    
+    private void checkDeep() {
+        if (Properties.getGraphDeep()!= this.depthSlider.getValue()){
+            this.depthSlider.setValue(Properties.getGraphDeep());
+        }
+    }
+    
+    private void checkFriendsCount() {
+        if (Properties.getFriendsCount()!= this.friendsSlider.getValue()){
+            this.friendsSlider.setValue(Properties.getFriendsCount());
         }
     }
 }

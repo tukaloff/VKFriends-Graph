@@ -108,6 +108,7 @@ public class Friends implements VKObject{
         alFields.add("fields");
         alFields.add("online");
         alFields.add("last_seen");
+        alFields.add("photo_50");
         alFields.add("photo_200");
         alFields.add("photo_200_orig");
         params = new ArrayList<>();

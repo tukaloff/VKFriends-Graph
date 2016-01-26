@@ -167,8 +167,9 @@ public class Connection {
      */
     public Document getXML() {
         try {
+            //System.out.println(sXML);
             return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-                new ByteArrayInputStream(sXML.getBytes()));
+                new ByteArrayInputStream(sXML.getBytes("UTF-8")));
         } catch (ParserConfigurationException ex) {
             System.out.println(TAG + ": " + ex.getMessage());
         } catch (SAXException ex) {

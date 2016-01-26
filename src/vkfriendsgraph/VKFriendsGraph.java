@@ -5,15 +5,19 @@
  */
 package vkfriendsgraph;
 
+import vkfriendsgraph.gui.MainFrame;
+import vkfriendsgraph.gui.AutorizFXPanel;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
-import java.io.IOException;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.stage.Stage;
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import static vkfriendsgraph.Utils.resetDimension;
 
@@ -27,10 +31,8 @@ public class VKFriendsGraph {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension newDim = resetDimension(dim, 70);
-        
+        setUIManager();
+        //Utils.saveFile("asd", "asd.txt", "");
         Properties.loadProperties();
         if (Properties.getAccessToken() == null || Properties.getAccessToken() == "") {
             EventQueue.invokeLater(new Runnable() {
@@ -40,9 +42,42 @@ public class VKFriendsGraph {
                     JFrame frame = new JFrame();
                     AutorizFXPanel authPanel = new AutorizFXPanel();
                     frame.add(authPanel);
-                    frame.setSize(800, 610);
+                    frame.setSize(800, 640);
                     frame.setResizable(false);
                     frame.setLocationByPlatform(true);
+                    frame.addWindowListener(new WindowListener() {
+
+                        @Override
+                        public void windowOpened(WindowEvent we) {
+                        }
+
+                        @Override
+                        public void windowClosing(WindowEvent we) {
+                            System.out.println("invoke");
+                            invoke();
+                            frame.dispose();
+                        }
+
+                        @Override
+                        public void windowClosed(WindowEvent we) {
+                        }
+
+                        @Override
+                        public void windowIconified(WindowEvent we) {
+                        }
+
+                        @Override
+                        public void windowDeiconified(WindowEvent we) {
+                        }
+
+                        @Override
+                        public void windowActivated(WindowEvent we) {
+                        }
+
+                        @Override
+                        public void windowDeactivated(WindowEvent we) {
+                        }
+                    });
                     frame.setVisible(true);
 
                     Platform.runLater(new Runnable() {
@@ -61,16 +96,22 @@ public class VKFriendsGraph {
                                 if (!(Properties.getAccessToken() == null || Properties.getAccessToken() == "")) {
                                     System.out.println("asd");
                                     frame.setVisible(false);
-                                    frame.dispose();
+                                    //frame.dispose();
                                     exit = true;
                                 }
                             }
                         }
-                    }).start();
+                    });//.start();
                 }
             });
+        } 
+        else {
+            invoke();
         }
-        
+    }
+    
+    private static void invoke() {
+
         EventQueue.invokeLater(new Runnable() {
 
             @Override
@@ -86,15 +127,30 @@ public class VKFriendsGraph {
                                 exit = true;
                             }
                         }
+                        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+                        Dimension newDim = resetDimension(dim, 70);
                         MainFrame frame = new MainFrame(newDim.width, newDim.height);
-                        frame.setSize(newDim);
+                        //frame.setSize(newDim);
                         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                         frame.setVisible(true);
                     }
                 }).start();
             }
         });
-        
+    }
+
+    private static void setUIManager() {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(VKFriendsGraph.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(VKFriendsGraph.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.getLogger(VKFriendsGraph.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(VKFriendsGraph.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 }

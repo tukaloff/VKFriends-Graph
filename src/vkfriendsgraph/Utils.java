@@ -32,7 +32,7 @@ public class Utils {
     
     public static boolean saveFile(Object obj, String name, String path) {
         try {
-            FileOutputStream fos = new FileOutputStream(path + name);
+            FileOutputStream fos = new FileOutputStream("C:\\ProgramData\\" + path + name);//"C:/" + 
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(obj);
             oos.flush();
@@ -50,7 +50,7 @@ public class Utils {
     public static Object readFile(String path) {
         Object obj = null;
         try {
-            FileInputStream fis = new FileInputStream(path);
+            FileInputStream fis = new FileInputStream("C:\\ProgramData\\" + path);//"C:/" + 
             ObjectInputStream ois = new ObjectInputStream(fis);
             obj = ois.readObject();
             ois.close();

@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -103,11 +104,19 @@ public class User implements VKObject, Serializable, Cloneable {
         VK_XMLParser xmlParser;
         path = new String[] {"user", "first_name"};
         xmlParser = new VK_XMLParser(node, path);
-        firstName = xmlParser.getValue(0);
+        try {
+            firstName=new String(xmlParser.getValue(0).getBytes(),"UTF-8");
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         
         path = new String[] {"user", "last_name"};
         xmlParser = new VK_XMLParser(node, path);
-        lastName = xmlParser.getValue(0);
+        try {
+            lastName = new String(xmlParser.getValue(0).getBytes(),"UTF-8");
+        } catch(UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } 
         
         path = new String[] {"user", "uid"};
         xmlParser = new VK_XMLParser(node, path);

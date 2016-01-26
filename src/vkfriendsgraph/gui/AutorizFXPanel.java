@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package vkfriendsgraph;
+package vkfriendsgraph.gui;
 
 import com.sun.javafx.beans.event.AbstractNotifyListener;
 import java.beans.EventHandler;
@@ -11,17 +11,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
-import javax.swing.event.ChangeListener;
+import vkfriendsgraph.Properties;
 
 /**
  *
@@ -42,8 +38,8 @@ public class AutorizFXPanel extends JFXPanel{
         String page = "https://oauth.vk.com/authorize?"
             + "client_id=4772459&display=page&"
             + "redirect_uri=https://oauth.vk.com/blank.html&"
-            + "scope=notify,friends,photos,audio,video,docs,notes,pages,status,offers,questions," 
-            + "wall,groups,messages,email,notifications,stats,ads,offline&"
+            //+ "scope=notify,friends,photos,audio,video,docs,notes,pages,status,offers,questions," 
+            //+ "wall,groups,messages,email,notifications,stats,ads,offline&"
                 + "response_type=token&v=5.40";
 
         WebEngine webEngine = web.getEngine();
